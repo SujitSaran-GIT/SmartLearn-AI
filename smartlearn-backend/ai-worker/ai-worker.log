@@ -1,0 +1,116 @@
+2025-10-24 17:35:46,964 - __main__ - INFO - Using Groq LLM provider
+2025-10-24 17:50:19,364 - __main__ - INFO - Using Groq LLM provider
+2025-10-24 17:50:19,364 - __main__ - INFO - AI Worker initialized successfully
+2025-10-24 17:50:19,364 - __main__ - INFO - AI Worker Started - Listening for MCQ generation jobs...
+2025-10-24 19:04:50,068 - __main__ - INFO - Using Groq LLM provider
+2025-10-24 19:04:50,069 - __main__ - INFO - AI Worker initialized successfully
+2025-10-24 19:04:50,069 - __main__ - INFO - AI Worker Started - Listening for MCQ generation jobs...
+2025-10-24 21:35:52,651 - __main__ - INFO - Using Groq LLM provider
+2025-10-24 21:35:52,651 - __main__ - INFO - AI Worker initialized successfully
+2025-10-24 21:35:52,651 - __main__ - INFO - AI Worker Started - Listening for MCQ generation jobs...
+2025-10-24 23:28:45,357 - __main__ - INFO - 🤖 Using Groq LLM provider
+2025-10-24 23:28:45,358 - __main__ - INFO - ✅ AI Worker initialized successfully
+2025-10-24 23:28:45,358 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
+2025-10-24 23:28:46,952 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel
+2025-10-24 23:30:40,506 - __main__ - INFO - 🎯 Starting job: 38981b89-cbc9-4dd6-b987-fa588e5d98ed
+2025-10-24 23:30:40,558 - __main__ - INFO - 📊 Progress: 10% - Downloading file
+2025-10-24 23:30:40,559 - __main__ - INFO - 📥 Downloading file: http://localhost:9000/smartlearn-files/08d77d2c-cf90-43da-b705-9916143c3633/25db000e-e61e-46b1-8d44-...
+2025-10-24 23:30:40,601 - __main__ - INFO - ✅ File downloaded: 240954 bytes
+2025-10-24 23:30:40,619 - __main__ - INFO - 📊 Progress: 30% - Extracting text from PDF
+2025-10-24 23:30:41,797 - __main__ - INFO - 📄 Extracting text from PDF...
+2025-10-24 23:30:41,862 - __main__ - INFO - ✅ Extracted 3200 characters from PDF
+2025-10-24 23:30:41,893 - __main__ - INFO - 📊 Progress: 60% - Generating questions with AI
+2025-10-24 23:30:41,895 - __main__ - INFO - 📝 Text truncated to 2007 characters
+2025-10-24 23:30:44,144 - llm.groq_client - INFO - ✅ Generated 5 valid MCQs
+2025-10-24 23:30:44,166 - __main__ - INFO - 📊 Progress: 90% - Saving results
+2025-10-24 23:30:44,233 - __main__ - INFO - ✅ Result sent to backend: complete
+2025-10-24 23:30:44,272 - __main__ - WARNING - ⚠️ Progress update failed: 429
+2025-10-24 23:30:44,274 - __main__ - INFO - ✅ Job 38981b89-cbc9-4dd6-b987-fa588e5d98ed completed in 3.8s with 5 MCQs
+2025-10-25 18:01:52,346 - __main__ - INFO - 🤖 Using Groq LLM provider
+2025-10-25 18:01:52,348 - __main__ - INFO - ✅ AI Worker initialized successfully
+2025-10-25 18:01:52,348 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
+2025-10-25 18:01:53,951 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel
+2025-10-25 18:05:10,702 - __main__ - INFO - 🎯 Starting job: 3d9ec985-7c6f-41a3-b28b-c7985aae5fd6
+2025-10-25 18:05:10,798 - __main__ - INFO - 📊 Progress: 10% - Downloading file
+2025-10-25 18:05:10,800 - __main__ - INFO - 📥 Downloading file: http://localhost:9000/smartlearn-files/08d77d2c-cf90-43da-b705-9916143c3633/288a0d46-c5e3-436b-987e-...
+2025-10-25 18:05:10,836 - __main__ - INFO - ✅ File downloaded: 106377 bytes
+2025-10-25 18:05:10,852 - __main__ - INFO - 📊 Progress: 30% - Extracting text from PDF
+2025-10-25 18:05:11,615 - __main__ - INFO - 📄 Extracting text from PDF...
+2025-10-25 18:05:11,730 - __main__ - INFO - ✅ Extracted 22810 characters from PDF
+2025-10-25 18:05:11,758 - __main__ - INFO - 📊 Progress: 60% - Generating questions with AI
+2025-10-25 18:05:11,761 - __main__ - INFO - 📝 Text truncated to 2007 characters
+2025-10-25 18:05:16,097 - llm.groq_client - INFO - ✅ Generated 26 valid MCQs
+2025-10-25 18:05:16,121 - __main__ - INFO - 📊 Progress: 90% - Saving results
+2025-10-25 18:05:16,224 - __main__ - INFO - ✅ Result sent to backend: complete
+2025-10-25 18:05:16,246 - __main__ - INFO - 📊 Progress: 100% - Job completed successfully
+2025-10-25 18:05:16,247 - __main__ - INFO - ✅ Job 3d9ec985-7c6f-41a3-b28b-c7985aae5fd6 completed in 5.5s with 26 MCQs
+2025-10-25 18:14:00,812 - __main__ - ERROR - 💥 Worker crashed: Connection closed by server.
+2025-10-25 18:51:46,596 - __main__ - INFO - 🤖 Using Groq LLM provider
+2025-10-25 18:51:46,596 - __main__ - INFO - ✅ AI Worker initialized successfully
+2025-10-25 18:51:46,597 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
+2025-10-25 18:51:47,416 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel
+2025-10-25 21:08:52,243 - __main__ - INFO - 🛑 Worker stopped by user
+2025-10-27 17:38:08,821 - __main__ - INFO - 🤖 Using Groq LLM provider
+2025-10-27 17:38:08,823 - __main__ - INFO - ✅ AI Worker initialized successfully
+2025-10-27 17:38:08,823 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
+2025-10-27 17:38:10,847 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel
+2025-10-27 20:40:11,572 - __main__ - INFO - 🎯 Starting job: 041e0c52-5155-450a-9a9f-cdbd86cf29db
+2025-10-27 20:40:11,659 - __main__ - INFO - 📊 Progress: 10% - Downloading file
+2025-10-27 20:40:11,660 - __main__ - INFO - 📥 Downloading file: http://localhost:9000/smartlearn-files/f8df92b0-550d-4fdf-9ebd-3c9599982190/f38e41f2-65b8-4d9f-982f-...
+2025-10-27 20:40:11,837 - __main__ - INFO - ✅ File downloaded: 2578958 bytes
+2025-10-27 20:40:11,861 - __main__ - INFO - 📊 Progress: 30% - Extracting text from PDF
+2025-10-27 20:40:12,774 - __main__ - INFO - 📄 Extracting text from PDF...
+2025-10-27 20:40:13,148 - __main__ - INFO - ✅ Extracted 134648 characters from PDF
+2025-10-27 20:40:13,159 - __main__ - INFO - 📊 Progress: 60% - Generating questions with AI
+2025-10-27 20:40:13,166 - __main__ - INFO - 📝 Text truncated to 2007 characters
+2025-10-27 20:40:15,830 - llm.groq_client - INFO - ✅ Generated 10 valid MCQs
+2025-10-27 20:40:15,847 - __main__ - INFO - 📊 Progress: 90% - Saving results
+2025-10-27 20:40:15,903 - __main__ - INFO - ✅ Result sent to backend: complete
+2025-10-27 20:40:15,914 - __main__ - INFO - 📊 Progress: 100% - Job completed successfully
+2025-10-27 20:40:15,915 - __main__ - INFO - ✅ Job 041e0c52-5155-450a-9a9f-cdbd86cf29db completed in 4.3s with 10 MCQs
+2025-10-27 20:43:36,871 - __main__ - INFO - 🎯 Starting job: dd11c039-d7ee-437f-94ef-edb1e1993fb1
+2025-10-27 20:43:36,959 - __main__ - INFO - 📊 Progress: 10% - Downloading file
+2025-10-27 20:43:36,960 - __main__ - INFO - 📥 Downloading file: http://localhost:9000/smartlearn-files/f8df92b0-550d-4fdf-9ebd-3c9599982190/5124ad8d-4099-4bce-80de-...
+2025-10-27 20:43:37,006 - __main__ - INFO - ✅ File downloaded: 680879 bytes
+2025-10-27 20:43:37,015 - __main__ - INFO - 📊 Progress: 30% - Extracting text from PDF
+2025-10-27 20:43:37,016 - __main__ - INFO - 📄 Extracting text from PDF...
+2025-10-27 20:43:37,092 - __main__ - INFO - ✅ Extracted 12186 characters from PDF
+2025-10-27 20:43:37,118 - __main__ - INFO - 📊 Progress: 60% - Generating questions with AI
+2025-10-27 20:43:37,122 - __main__ - INFO - 📝 Text truncated to 2007 characters
+2025-10-27 20:43:39,462 - llm.groq_client - INFO - ✅ Generated 10 valid MCQs
+2025-10-27 20:43:39,493 - __main__ - INFO - 📊 Progress: 90% - Saving results
+2025-10-27 20:43:39,554 - __main__ - INFO - ✅ Result sent to backend: complete
+2025-10-27 20:43:39,588 - __main__ - INFO - 📊 Progress: 100% - Job completed successfully
+2025-10-27 20:43:39,588 - __main__ - INFO - ✅ Job dd11c039-d7ee-437f-94ef-edb1e1993fb1 completed in 2.7s with 10 MCQs
+2025-10-27 20:58:43,545 - __main__ - INFO - 🎯 Starting job: 8eacdca8-cbe6-44c0-8655-6a112b22256d
+2025-10-27 20:58:43,595 - __main__ - INFO - 📊 Progress: 10% - Downloading file
+2025-10-27 20:58:43,596 - __main__ - INFO - 📥 Downloading file: http://localhost:9000/smartlearn-files/f8df92b0-550d-4fdf-9ebd-3c9599982190/a8eadb56-9354-4e9d-a5dc-...
+2025-10-27 20:58:43,641 - __main__ - INFO - ✅ File downloaded: 108488 bytes
+2025-10-27 20:58:43,647 - __main__ - INFO - 📊 Progress: 30% - Extracting text from PDF
+2025-10-27 20:58:43,648 - __main__ - INFO - 📄 Extracting text from PDF...
+2025-10-27 20:58:43,701 - __main__ - INFO - ✅ Extracted 481 characters from PDF
+2025-10-27 20:58:43,722 - __main__ - INFO - 📊 Progress: 60% - Generating questions with AI
+2025-10-27 20:58:54,518 - llm.groq_client - INFO - ✅ Generated 19 valid MCQs
+2025-10-27 20:58:54,546 - __main__ - INFO - 📊 Progress: 90% - Saving results
+2025-10-27 20:58:54,602 - __main__ - INFO - ✅ Result sent to backend: complete
+2025-10-27 20:58:54,621 - __main__ - INFO - 📊 Progress: 100% - Job completed successfully
+2025-10-27 20:58:54,623 - __main__ - INFO - ✅ Job 8eacdca8-cbe6-44c0-8655-6a112b22256d completed in 11.1s with 19 MCQs
+2025-10-28 17:16:51,819 - __main__ - INFO - 🤖 Using Groq LLM provider
+2025-10-28 17:16:51,820 - __main__ - INFO - ✅ AI Worker initialized successfully
+2025-10-28 17:16:51,821 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
+2025-10-28 17:16:53,741 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel
+2025-10-28 18:22:06,942 - __main__ - INFO - 🎯 Starting job: bbf56c02-dfc8-49d5-9ad7-cda8c0d6f2c3
+2025-10-28 18:22:07,191 - __main__ - INFO - 📊 Progress: 10% - Downloading file
+2025-10-28 18:22:07,194 - __main__ - INFO - 📥 Downloading file: http://localhost:9000/smartlearn-files/f89a70f9-cec6-4edd-97c9-28fb637c123c/c86fd457-9fff-40f4-95da-...
+2025-10-28 18:22:07,373 - __main__ - INFO - ✅ File downloaded: 8300677 bytes
+2025-10-28 18:22:07,390 - __main__ - INFO - 📊 Progress: 30% - Extracting text from PDF
+2025-10-28 18:22:08,329 - __main__ - INFO - 📄 Extracting text from PDF...
+2025-10-28 18:22:08,603 - __main__ - INFO - ✅ Extracted 14775 characters from PDF
+2025-10-28 18:22:08,620 - __main__ - INFO - 📊 Progress: 60% - Generating questions with AI
+2025-10-28 18:22:08,624 - __main__ - INFO - 📝 Text truncated to 2007 characters
+2025-10-28 18:22:11,972 - llm.groq_client - INFO - ✅ Generated 10 valid MCQs
+2025-10-28 18:22:11,991 - __main__ - INFO - 📊 Progress: 90% - Saving results
+2025-10-28 18:22:12,043 - __main__ - INFO - ✅ Result sent to backend: complete
+2025-10-28 18:22:12,084 - __main__ - INFO - 📊 Progress: 100% - Job completed successfully
+2025-10-28 18:22:12,084 - __main__ - INFO - ✅ Job bbf56c02-dfc8-49d5-9ad7-cda8c0d6f2c3 completed in 5.1s with 10 MCQs
+2025-10-28 18:49:27,149 - __main__ - ERROR - 💥 Worker crashed: Connection closed by server.

@@ -1,0 +1,28 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.1
+redis==4.6.0  # Downgraded to work with bullmq
+requests==2.31.0
+pymupdf==1.23.8
+python-dotenv==1.0.0
+
+# AI/ML dependencies
+groq==0.9.0
+google-generativeai==0.3.2
+openai==1.12.0
+
+# Queue processing
+bullmq==1.24.0
+
+# Optional dependencies (remove if not needed)
+numpy==1.26.3
+aiofiles==23.2.1
+httpx==0.25.2
+
+# Remove these to simplify (they're causing conflicts):
+# pdfplumber==0.10.3
+# jsonschema==4.20.0
+# python-multipart==0.0.6
+# langchain-core==0.1.10
+# langchain-community==0.0.13
