@@ -61,7 +61,7 @@ const QuizGeneration: React.FC = () => {
       const result = await dispatch(generateMCQ(mcqData)).unwrap();
       
       if (result.data?.jobId) {
-        navigate(`/exam/${result.data.jobId}`);
+        navigate(`/quiz/${result.data.jobId}/take`);
       }
     } catch (error) {
       console.error('Failed to generate quiz:', error);

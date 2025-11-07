@@ -238,7 +238,7 @@ const Dashboard: React.FC = () => {
             title="Create New Quiz"
             description="Generate quiz from your documents"
             icon={<FileText className="w-8 h-8" />}
-            action="/quizzes/create"
+            action="/generate"
             color="indigo"
           />
           <QuickAction

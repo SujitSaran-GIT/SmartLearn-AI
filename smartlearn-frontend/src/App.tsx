@@ -17,6 +17,9 @@ import AttemptQuiz from './pages/AttemptQuiz';
 import SettingsModal from './components/SettingsModal';
 import Settings from './pages/Settings';
 import HelpSupport from './pages/HelpSupport';
+import Pricing from './pages/Pricing';
+import History from './pages/History';
+import Leaderboard from './pages/Leaderboard';
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -47,6 +50,9 @@ const App = () => {
         <Route path="/help" element={<ProtectedRoute><Layout currentPage="help"><HelpSupport /></Layout></ProtectedRoute>} />
         <Route path="/generate-quiz/:fileId" element={<ProtectedRoute><Layout currentPage="Generate Quiz"><QuizGeneration /></Layout></ProtectedRoute>} />
         <Route path="/exam/:jobId" element={<ProtectedRoute><Layout currentPage="Exam"><ExamScreen /></Layout></ProtectedRoute>} />
+        <Route path="/pricing" element={<ProtectedRoute><Layout currentPage="Pricing"><Pricing /></Layout></ProtectedRoute>} />
+        <Route path="/history" element={<ProtectedRoute><Layout currentPage="History"><History /></Layout></ProtectedRoute>} />
+        <Route path="/leaderboard" element={<ProtectedRoute><Layout currentPage="Leaderboard"><Leaderboard /></Layout></ProtectedRoute>} />
       </Routes>
   );
 };
