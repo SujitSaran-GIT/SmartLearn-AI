@@ -18,9 +18,54 @@ import type {
 
 class ApiService {
   private baseURL: string;
+  private pendingRequests = new Map<string, Promise<any>>();
 
   constructor() {
     this.baseURL = 'http://localhost:3000/api';
+  }
+
+  // Request deduplication to prevent multiple identical requests
+  private getCacheKey(endpoint: string, options?: RequestInit): string {
+    const method = options?.method || 'GET';
+    const body = options?.body ? JSON.stringify(options.body) : '';
+    return `${method}:${endpoint}:${body}`;
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return Date.now() >= payload.exp * 1000;
+    } catch {
+      return true;
+    }
+  }
+
+  private async refreshAccessToken(): Promise<string> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await fetch(`${this.baseURL}/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    if (!response.ok) {
+      // Clear tokens on refresh failure
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      throw new Error('Token refresh failed');
+    }
+
+    const data = await response.json();
+    const newAccessToken = data.data.accessToken;
+    localStorage.setItem('accessToken', newAccessToken);
+    return newAccessToken;
   }
 
   private async request<T>(
@@ -29,29 +74,98 @@ class ApiService {
     retryCount = 0
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
+    const cacheKey = this.getCacheKey(endpoint, options);
 
-    const token = localStorage.getItem('accessToken');
+    // Request deduplication - return existing promise if same request is pending
+    if (this.pendingRequests.has(cacheKey)) {
+      return this.pendingRequests.get(cacheKey) as Promise<T>;
+    }
+
+    // Create new request promise
+    const requestPromise = this.executeRequest<T>(url, endpoint, options, retryCount)
+      .finally(() => {
+        // Clean up pending request cache
+        this.pendingRequests.delete(cacheKey);
+      });
+
+    // Store pending request
+    this.pendingRequests.set(cacheKey, requestPromise);
+
+    return requestPromise;
+  }
+
+  private async executeRequest<T>(
+    url: string,
+    endpoint: string,
+    options: RequestInit = {},
+    retryCount = 0
+  ): Promise<T> {
+    // Get and validate token
+    let token = localStorage.getItem('accessToken');
+
+    // Refresh token if it's expired or will expire within 2 minutes
+    if (token && this.isTokenExpired(token)) {
+      try {
+        token = await this.refreshAccessToken();
+      } catch (error) {
+        // Token refresh failed, user needs to re-login
+        window.location.href = '/login';
+        throw error;
+      }
+    }
 
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
     };
 
-  
     try {
       const response = await fetch(url, config);
+
+      // Handle token expiration with automatic refresh
+      if (response.status === 403) {
+        const errorData = await response.json().catch(() => ({}));
+
+        if (errorData.code === 'TOKEN_EXPIRED' && errorData.requiresRefresh && retryCount === 0) {
+          try {
+            token = await this.refreshAccessToken();
+            // Retry the original request with new token
+            config.headers = {
+              ...config.headers,
+              'Authorization': `Bearer ${token}`,
+            };
+
+            const retryResponse = await fetch(url, config);
+            if (!retryResponse.ok) {
+              const retryErrorData = await retryResponse.json().catch(() => ({}));
+              throw new Error(retryErrorData.message || `HTTP error! status: ${retryResponse.status}`);
+            }
+
+            return await retryResponse.json();
+          } catch (refreshError) {
+            // Refresh failed, redirect to login
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+            throw refreshError;
+          }
+        }
+      }
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
 
-        // Handle 429 Too Many Requests with exponential backoff retry
-        if (response.status === 429 && retryCount < 3) {
-          const backoffDelay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
-          await new Promise(resolve => setTimeout(resolve, backoffDelay));
-          return this.request(endpoint, options, retryCount + 1);
+        // Handle 429 Too Many Requests with improved backoff
+        if (response.status === 429 && retryCount < 5) { // Increased retry count
+          const retryAfter = errorData.retryAfter || Math.pow(2, retryCount) * 1000;
+          console.log(`Rate limited. Retrying after ${retryAfter}ms...`);
+          await new Promise(resolve => setTimeout(resolve, retryAfter));
+          return this.executeRequest(url, endpoint, options, retryCount + 1);
         }
 
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);

@@ -49,17 +49,102 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Rate limiting
-// const limiter = rateLimit({
-//   windowMs: 100 * 60 * 1000,
-//   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
-//   message: {
-//     error: 'Too many requests from this IP, please try again later.'
-//   },
-//   standardHeaders: true,
-//   legacyHeaders: false
-// });
-// app.use('/api/', limiter);
+// Rate limiting - Enhanced configuration
+const createRateLimiter = (windowMs, max, message) => rateLimit({
+  windowMs,
+  max,
+  message: {
+    success: false,
+    error: message,
+    code: 'RATE_LIMIT_EXCEEDED'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: message,
+      code: 'RATE_LIMIT_EXCEEDED',
+      retryAfter: Math.round(windowMs / 1000)
+    });
+  }
+});
+
+// Create a more sophisticated rate limiting system
+const createDynamicRateLimiter = (windowMs, max, message, skipSuccessfulRequests = false) => rateLimit({
+  windowMs,
+  max,
+  message: {
+    success: false,
+    error: message,
+    code: 'RATE_LIMIT_EXCEEDED'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests, // Don't count successful requests
+  skipFailedRequests: false, // Count failed requests to prevent abuse
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: message,
+      code: 'RATE_LIMIT_EXCEEDED',
+      retryAfter: Math.round(windowMs / 1000)
+    });
+  }
+});
+
+// General API rate limiting - Very lenient for normal usage
+const generalLimiter = createDynamicRateLimiter(
+  15 * 60 * 1000, // 15 minutes
+  parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '2000'), // 2000 requests per 15 min
+  'Too many requests from this IP, please try again later.',
+  false // Count all requests to prevent abuse
+);
+
+// Auth rate limiting - Moderate limits
+const authLimiter = createDynamicRateLimiter(
+  15 * 60 * 1000, // 15 minutes
+  parseInt(process.env.RATE_LIMIT_AUTH_REQUESTS || '100'), // 100 requests per 15 min
+  'Too many authentication attempts, please try again later.'
+);
+
+// Login/Signup rate limiting - Stricter but reasonable
+const loginLimiter = createDynamicRateLimiter(
+  15 * 60 * 1000, // 15 minutes
+  parseInt(process.env.RATE_LIMIT_LOGIN_REQUESTS || '50'), // 50 requests per 15 min
+  'Too many login attempts, please try again later.'
+);
+
+// Quiz rate limiting - Per minute limits to prevent rapid polling
+const quizLimiter = createDynamicRateLimiter(
+  1 * 60 * 1000, // 1 minute
+  200, // 200 requests per minute for quiz endpoints
+  'Too many quiz requests, please wait before making more requests.',
+  true // Don't count successful requests
+);
+
+// File operations rate limiting
+const fileLimiter = createDynamicRateLimiter(
+  5 * 60 * 1000, // 5 minutes
+  50, // 50 file operations per 5 minutes
+  'Too many file operations, please wait before making more requests.'
+);
+
+// MCQ generation rate limiting
+const mcqLimiter = createDynamicRateLimiter(
+  10 * 60 * 1000, // 10 minutes
+  20, // 20 MCQ generations per 10 minutes
+  'Too many MCQ generation requests, please wait before making more requests.'
+);
+
+// Apply rate limiters in order of specificity
+app.use('/api/', generalLimiter);
+app.use('/api/auth', authLimiter);
+app.use('/api/auth/login', loginLimiter);
+app.use('/api/auth/signup', loginLimiter);
+app.use('/api/quiz', quizLimiter);
+app.use('/api/files', fileLimiter);
+app.use('/api/mcq', mcqLimiter);
 
 // Health check
 app.get('/health', (req, res) => {

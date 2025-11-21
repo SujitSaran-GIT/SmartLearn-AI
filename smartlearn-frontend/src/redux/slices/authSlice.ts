@@ -105,6 +105,8 @@ const authSlice = createSlice({
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
+
+      // Note: token refresh manager will be stopped from App.tsx
     },
     clearError: (state) => {
       state.error = null;
@@ -126,6 +128,7 @@ const authSlice = createSlice({
         state.tokens = action.payload.tokens;
         state.isAuthenticated = true;
         state.error = null;
+        // Note: token refresh manager will be started from App.tsx
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -145,6 +148,7 @@ const authSlice = createSlice({
         state.tokens = action.payload.tokens;
         state.isAuthenticated = true;
         state.error = null;
+        // Note: token refresh manager will be started from App.tsx
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
@@ -182,6 +186,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.tokens = null;
+        // Note: token refresh manager will be stopped from App.tsx
       });
   },
 });

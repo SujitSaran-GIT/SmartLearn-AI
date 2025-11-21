@@ -5,6 +5,7 @@ import filesReducer from './slices/fileSlice';
 import mcqReducer from './slices/mcqSlice';
 import quizReducer from './slices/quizSlice';
 import type { RootState } from '../types';
+import { tokenRefreshManager } from '../utils/tokenRefresh';
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,9 @@ export const store = configureStore({
     }),
   devTools: process.env.NODE_ENV !== 'production',
 });
+
+// Initialize token refresh manager with store reference
+tokenRefreshManager.setStore(store);
 
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch = () => useDispatch<AppDispatch>();

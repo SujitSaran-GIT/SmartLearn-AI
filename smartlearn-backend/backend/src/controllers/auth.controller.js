@@ -52,7 +52,7 @@ export const signup = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '15m' }
     );
 
     const refreshToken = jwt.sign(

@@ -37,7 +37,7 @@ const Pricing: React.FC = () => {
       ],
       ctaText: 'Get Started',
       icon: <Zap className="w-6 h-6" />,
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-[var(--primary-500)] to-[var(--secondary-500)]'
     },
     {
       id: 'pro',
@@ -59,7 +59,7 @@ const Pricing: React.FC = () => {
       ],
       ctaText: 'Go Pro',
       icon: <Sparkles className="w-6 h-6" />,
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: 'from-[var(--secondary-500)] to-[var(--accent-500)]'
     },
     {
       id: 'enterprise',
@@ -82,7 +82,7 @@ const Pricing: React.FC = () => {
       ],
       ctaText: 'Contact Sales',
       icon: <Crown className="w-6 h-6" />,
-      gradient: 'from-amber-500 to-orange-500'
+      gradient: 'from-[var(--warning-500)] to-[var(--accent-500)]'
     }
   ];
 
@@ -99,7 +99,7 @@ const Pricing: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[var(--bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
@@ -117,7 +117,7 @@ const Pricing: React.FC = () => {
               onClick={() => setBillingCycle('monthly')}
               className={`px-6 py-3 rounded-md text-sm font-medium transition-all ${
                 billingCycle === 'monthly'
-                  ? 'bg-white text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]'
+                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
@@ -127,12 +127,12 @@ const Pricing: React.FC = () => {
               onClick={() => setBillingCycle('yearly')}
               className={`px-6 py-3 rounded-md text-sm font-medium transition-all flex items-center space-x-2 ${
                 billingCycle === 'yearly'
-                  ? 'bg-white text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]'
+                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <span>Yearly</span>
-              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+              <span className="bg-[var(--success-100)] text-[var(--success-800)] text-xs px-2 py-1 rounded-full dark:bg-[var(--success-900)] dark:text-[var(--success-300)]">
                 Save up to 17%
               </span>
             </button>
@@ -150,7 +150,7 @@ const Pricing: React.FC = () => {
             return (
               <div
                 key={plan.id}
-                className={`relative rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
+                className={`relative rounded-2xl transition-all duration-300 card-hover ${
                   plan.popular
                     ? 'border-2 border-[var(--primary-500)] shadow-2xl'
                     : 'border border-[var(--border-primary)] shadow-lg'
@@ -159,7 +159,7 @@ const Pricing: React.FC = () => {
                 {/* Popular Badge */}
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg flex items-center space-x-1">
+                    <div className="bg-gradient-to-r from-[var(--secondary-500)] to-[var(--accent-500)] text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg flex items-center space-x-1">
                       <Star className="w-4 h-4 fill-current" />
                       <span>MOST POPULAR</span>
                     </div>
@@ -169,14 +169,14 @@ const Pricing: React.FC = () => {
                 {/* Best Value Badge */}
                 {plan.bestValue && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg flex items-center space-x-1">
+                    <div className="bg-gradient-to-r from-[var(--warning-500)] to-[var(--accent-500)] text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg flex items-center space-x-1">
                       <Crown className="w-4 h-4 fill-current" />
                       <span>BEST VALUE</span>
                     </div>
                   </div>
                 )}
 
-                <div className="bg-white rounded-2xl p-8 h-full flex flex-col">
+                <div className="bg-[var(--bg-primary)] rounded-2xl p-8 h-full flex flex-col">
                   {/* Plan Header */}
                   <div className="text-center mb-8">
                     <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-r ${plan.gradient} text-white mb-4`}>
@@ -204,7 +204,7 @@ const Pricing: React.FC = () => {
                         <div className="text-sm text-[var(--text-secondary)]">
                           {formatINR(plan.yearlyPrice)} billed annually
                         </div>
-                        <div className="text-green-600 text-sm font-semibold">
+                        <div className="text-[var(--success-600)] text-sm font-semibold dark:text-[var(--success-400)]">
                           Save {formatINR(plan.savings)} vs monthly
                         </div>
                       </div>
@@ -217,10 +217,10 @@ const Pricing: React.FC = () => {
                   <button
                     className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all mb-8 ${
                       plan.popular
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg'
+                        ? 'bg-gradient-to-r from-[var(--secondary-500)] to-[var(--accent-500)] hover:from-[var(--secondary-600)] hover:to-[var(--accent-600)] shadow-lg'
                         : plan.bestValue
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg'
-                        : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600'
+                        ? 'bg-gradient-to-r from-[var(--warning-500)] to-[var(--accent-500)] hover:from-[var(--warning-600)] hover:to-[var(--accent-600)] shadow-lg'
+                        : 'bg-gradient-to-r from-[var(--primary-500)] to-[var(--secondary-500)] hover:from-[var(--primary-600)] hover:to-[var(--secondary-600)]'
                     }`}
                   >
                     {plan.ctaText}
@@ -232,7 +232,7 @@ const Pricing: React.FC = () => {
                     <ul className="space-y-3">
                       {plan.features.map((feature, index) => (
                         <li key={index} className="flex items-start space-x-3">
-                          <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <Check className="w-5 h-5 text-[var(--success-500)] mt-0.5 flex-shrink-0" />
                           <span className="text-[var(--text-secondary)]">{feature}</span>
                         </li>
                       ))}
@@ -246,7 +246,7 @@ const Pricing: React.FC = () => {
 
         {/* Free Trial Section */}
         <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-[var(--primary-50)] to-[var(--secondary-50)] rounded-2xl p-8 border border-[var(--border-primary)]">
+          <div className="bg-gradient-to-r from-[var(--primary-50)] to-[var(--secondary-50)] rounded-2xl p-8 border border-[var(--border-primary)] dark:from-[var(--primary-900)] dark:to-[var(--secondary-900)]">
             <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
               Start with our Free Plan
             </h2>
@@ -255,7 +255,7 @@ const Pricing: React.FC = () => {
               Experience the power of AI-powered learning with basic features.
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <div className="text-left bg-white rounded-lg p-4 shadow-sm">
+              <div className="text-left bg-[var(--bg-primary)] rounded-lg p-4 shadow-sm border border-[var(--border-primary)]">
                 <h4 className="font-semibold text-[var(--text-primary)]">Free Plan Includes:</h4>
                 <ul className="text-sm text-[var(--text-secondary)] mt-2 space-y-1">
                   <li>• 2 quiz attempts per month</li>
@@ -264,7 +264,7 @@ const Pricing: React.FC = () => {
                   <li>• 3-day history retention</li>
                 </ul>
               </div>
-              <button className="bg-white text-[var(--primary-600)] border border-[var(--primary-300)] px-8 py-4 rounded-xl font-semibold hover:bg-[var(--primary-50)] transition-colors shadow-sm">
+              <button className="bg-[var(--bg-primary)] text-[var(--primary-600)] border border-[var(--primary-300)] px-8 py-4 rounded-xl font-semibold hover:bg-[var(--primary-50)] transition-colors shadow-sm dark:bg-[var(--primary-900)] dark:text-[var(--primary-400)] dark:border-[var(--primary-700)]">
                 Start Free Trial
               </button>
             </div>
@@ -295,7 +295,7 @@ const Pricing: React.FC = () => {
                 answer: "No long-term contracts. You can cancel your subscription at any time."
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-[var(--border-primary)]">
+              <div key={index} className="bg-[var(--bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--border-primary)]">
                 <h3 className="font-semibold text-[var(--text-primary)] mb-2">{faq.question}</h3>
                 <p className="text-[var(--text-secondary)] text-sm">{faq.answer}</p>
               </div>
@@ -308,15 +308,15 @@ const Pricing: React.FC = () => {
           <p className="text-[var(--text-secondary)] mb-6">Trusted by students and professionals across India</p>
           <div className="flex justify-center items-center space-x-8 opacity-60">
             <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--primary-600)]">50,000+</div>
+              <div className="text-2xl font-bold text-[var(--primary-600)] dark:text-[var(--primary-400)]">50,000+</div>
               <div className="text-sm text-[var(--text-secondary)]">Active Users</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--primary-600)]">4.8/5</div>
+              <div className="text-2xl font-bold text-[var(--primary-600)] dark:text-[var(--primary-400)]">4.8/5</div>
               <div className="text-sm text-[var(--text-secondary)]">User Rating</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--primary-600)]">99.9%</div>
+              <div className="text-2xl font-bold text-[var(--primary-600)] dark:text-[var(--primary-400)]">99.9%</div>
               <div className="text-sm text-[var(--text-secondary)]">Uptime</div>
             </div>
           </div>

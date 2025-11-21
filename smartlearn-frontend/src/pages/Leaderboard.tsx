@@ -104,11 +104,11 @@ const Leaderboard: React.FC = () => {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Crown className="w-6 h-6 text-yellow-500 fill-current" />;
+        return <Crown className="w-6 h-6 text-[var(--warning-500)] fill-current" />;
       case 2:
-        return <Medal className="w-6 h-6 text-gray-400 fill-current" />;
+        return <Medal className="w-6 h-6 text-[var(--neutral-400)] fill-current" />;
       case 3:
-        return <Medal className="w-6 h-6 text-amber-600 fill-current" />;
+        return <Medal className="w-6 h-6 text-[var(--warning-700)] fill-current" />;
       default:
         return <span className="text-lg font-bold text-[var(--text-secondary)]">{rank}</span>;
     }
@@ -117,30 +117,30 @@ const Leaderboard: React.FC = () => {
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'beginner':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-[var(--primary-100)] text-[var(--primary-800)] dark:bg-[var(--primary-900)] dark:text-[var(--primary-300)]';
       case 'intermediate':
-        return 'bg-green-100 text-green-800';
+        return 'bg-[var(--success-100)] text-[var(--success-800)] dark:bg-[var(--success-900)] dark:text-[var(--success-300)]';
       case 'advanced':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-[var(--secondary-100)] text-[var(--secondary-800)] dark:bg-[var(--secondary-900)] dark:text-[var(--secondary-300)]';
       case 'expert':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-[var(--warning-100)] text-[var(--warning-800)] dark:bg-[var(--warning-900)] dark:text-[var(--warning-300)]';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[var(--neutral-100)] text-[var(--neutral-800)] dark:bg-[var(--neutral-900)] dark:text-[var(--neutral-300)]';
     }
   };
 
   const getStreakColor = (streak: number) => {
-    if (streak >= 10) return 'text-red-600';
-    if (streak >= 5) return 'text-orange-600';
-    return 'text-green-600';
+    if (streak >= 10) return 'text-[var(--error-600)] dark:text-[var(--error-400)]';
+    if (streak >= 5) return 'text-[var(--warning-600)] dark:text-[var(--warning-400)]';
+    return 'text-[var(--success-600)] dark:text-[var(--success-400)]';
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)] p-6">
+    <div className="min-h-screen bg-[var(--bg-primary)] p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[var(--warning-400)] to-[var(--accent-500)] rounded-full mb-4 shadow-lg">
             <Trophy className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Learning Leaderboard</h1>
@@ -149,45 +149,45 @@ const Leaderboard: React.FC = () => {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-lg border border-[var(--border-primary)]">
+          <div className="bg-[var(--bg-secondary)] rounded-xl p-6 shadow-lg border border-[var(--border-primary)] card-hover">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[var(--text-secondary)]">Your Rank</p>
                 <p className="text-2xl font-bold text-[var(--text-primary)]">#{currentUser.rank}</p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-blue-600" />
+              <div className="p-3 bg-[var(--primary-100)] rounded-lg dark:bg-[var(--primary-900)]">
+                <TrendingUp className="w-6 h-6 text-[var(--primary-600)] dark:text-[var(--primary-400)]" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg border border-[var(--border-primary)]">
+          <div className="bg-[var(--bg-secondary)] rounded-xl p-6 shadow-lg border border-[var(--border-primary)] card-hover">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[var(--text-secondary)]">Total Participants</p>
                 <p className="text-2xl font-bold text-[var(--text-primary)]">{leaderboardData.length + 1}</p>
               </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <Users className="w-6 h-6 text-green-600" />
+              <div className="p-3 bg-[var(--success-100)] rounded-lg dark:bg-[var(--success-900)]">
+                <Users className="w-6 h-6 text-[var(--success-600)] dark:text-[var(--success-400)]" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg border border-[var(--border-primary)]">
+          <div className="bg-[var(--bg-secondary)] rounded-xl p-6 shadow-lg border border-[var(--border-primary)] card-hover">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[var(--text-secondary)]">Your Score</p>
-                <p className="text-2xl font-bold text-[var(--primary-600)]">{currentUser.score}</p>
+                <p className="text-2xl font-bold text-[var(--primary-600)] dark:text-[var(--primary-400)]">{currentUser.score}</p>
               </div>
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <Award className="w-6 h-6 text-purple-600" />
+              <div className="p-3 bg-[var(--secondary-100)] rounded-lg dark:bg-[var(--secondary-900)]">
+                <Award className="w-6 h-6 text-[var(--secondary-600)] dark:text-[var(--secondary-400)]" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl p-6 shadow-lg border border-[var(--border-primary)] mb-6">
+        <div className="bg-[var(--bg-secondary)] rounded-xl p-6 shadow-lg border border-[var(--border-primary)] mb-6">
           <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-[var(--text-primary)]">Time Period:</span>
@@ -199,7 +199,7 @@ const Leaderboard: React.FC = () => {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       timeFilter === period
                         ? 'bg-[var(--primary-500)] text-white shadow-md'
-                        : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
+                        : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-quaternary)]'
                     }`}
                   >
                     {period.charAt(0).toUpperCase() + period.slice(1)}
@@ -211,7 +211,7 @@ const Leaderboard: React.FC = () => {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-4 py-2 border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:border-transparent"
+              className="px-4 py-2 border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:border-transparent bg-[var(--bg-primary)] text-[var(--text-primary)]"
             >
               <option value="all">All Categories</option>
               <option value="programming">Programming</option>
@@ -223,11 +223,11 @@ const Leaderboard: React.FC = () => {
         </div>
 
         {/* Leaderboard Table */}
-        <div className="bg-white rounded-xl shadow-lg border border-[var(--border-primary)] overflow-hidden mb-8">
+        <div className="bg-[var(--bg-secondary)] rounded-xl shadow-lg border border-[var(--border-primary)] overflow-hidden mb-8">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-[var(--bg-secondary)] border-b border-[var(--border-primary)]">
+                <tr className="bg-[var(--bg-tertiary)] border-b border-[var(--border-primary)]">
                   <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--text-primary)]">Rank</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--text-primary)]">User</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--text-primary)]">Level</th>
@@ -243,8 +243,8 @@ const Leaderboard: React.FC = () => {
                     key={user.id} 
                     className={`transition-colors ${
                       user.rank <= 3 
-                        ? 'bg-gradient-to-r from-yellow-50 to-orange-50 hover:from-yellow-100 hover:to-orange-100' 
-                        : 'hover:bg-[var(--bg-secondary)]'
+                        ? 'bg-gradient-to-r from-[var(--warning-50)] to-[var(--accent-50)] hover:from-[var(--warning-100)] hover:to-[var(--accent-100)] dark:from-[var(--warning-900)] dark:to-[var(--accent-900)]' 
+                        : 'hover:bg-[var(--bg-tertiary)]'
                     }`}
                   >
                     <td className="px-6 py-4">
@@ -260,14 +260,14 @@ const Leaderboard: React.FC = () => {
                         <div>
                           <div className="font-semibold text-[var(--text-primary)] flex items-center space-x-2">
                             <span>{user.name}</span>
-                            {user.rank <= 3 && <Star className="w-4 h-4 text-yellow-500 fill-current" />}
+                            {user.rank <= 3 && <Star className="w-4 h-4 text-[var(--warning-500)] fill-current" />}
                           </div>
                           <div className="text-sm text-[var(--text-tertiary)]">@{user.name.toLowerCase().replace(' ', '')}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getLevelColor(user.level)}`}>
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getLevelColor(user.level)}`}>
                         {user.level.charAt(0).toUpperCase() + user.level.slice(1)}
                       </span>
                     </td>
@@ -276,7 +276,7 @@ const Leaderboard: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 text-[var(--text-secondary)]">{user.quizzesTaken}</td>
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-green-600">{user.accuracy}%</div>
+                      <div className="font-semibold text-[var(--success-600)] dark:text-[var(--success-400)]">{user.accuracy}%</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className={`font-bold ${getStreakColor(user.streak)} flex items-center space-x-1`}>
@@ -326,7 +326,7 @@ const Leaderboard: React.FC = () => {
 
         {/* Motivational Section */}
         <div className="mt-8 text-center">
-          <div className="bg-white rounded-xl p-8 shadow-lg border border-[var(--border-primary)]">
+          <div className="bg-[var(--bg-secondary)] rounded-xl p-8 shadow-lg border border-[var(--border-primary)]">
             <Target className="w-12 h-12 text-[var(--primary-500)] mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Ready to Climb Higher?</h3>
             <p className="text-[var(--text-secondary)] mb-6 max-w-md mx-auto">

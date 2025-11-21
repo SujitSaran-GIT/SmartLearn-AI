@@ -14,13 +14,15 @@ import type { RootState } from './types';
 import QuizGeneration from './components/QuizGeneration';
 import ExamScreen from './components/ExamScreen';
 import AttemptQuiz from './pages/AttemptQuiz';
-import SettingsModal from './components/SettingsModal';
 import Settings from './pages/Settings';
 import HelpSupport from './pages/HelpSupport';
 import Pricing from './pages/Pricing';
 import History from './pages/History';
 import Leaderboard from './pages/Leaderboard';
-
+import { tokenRefreshManager } from './utils/tokenRefresh';
+import { useEffect } from 'react';
+import { logout } from './redux/slices/authSlice';
+import { useAppDispatch } from './redux/store';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -34,6 +36,34 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+
+  // Initialize token refresh manager when app starts
+  useEffect(() => {
+    if (isAuthenticated) {
+      tokenRefreshManager.startAutoRefresh();
+    } else {
+      tokenRefreshManager.stopAutoRefresh();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      tokenRefreshManager.stopAutoRefresh();
+    };
+  }, [isAuthenticated]);
+
+  // Handle refresh token failure by logging out user
+  useEffect(() => {
+    const handleRefreshFailure = () => {
+      const token = localStorage.getItem('accessToken');
+      if (!token && isAuthenticated) {
+        dispatch(logout());
+      }
+    };
+
+    const interval = setInterval(handleRefreshFailure, 5000); // Check every 5 seconds
+    return () => clearInterval(interval);
+  }, [isAuthenticated, dispatch]);
 
   return (
       <Routes>
