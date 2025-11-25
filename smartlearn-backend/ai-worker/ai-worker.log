@@ -225,3 +225,7 @@
 2025-11-07 14:55:07,461 - __main__ - INFO - ✅ Result sent to backend: complete
 2025-11-07 14:55:07,497 - __main__ - WARNING - ⚠️ Progress update failed: 429
 2025-11-07 14:55:07,499 - __main__ - INFO - ✅ Job 764e9431-91b0-43d1-975b-aeb89dab0cbd completed in 3.5s with 10 MCQs
+2025-11-25 23:16:43,061 - __main__ - INFO - 🤖 Using Groq LLM provider
+2025-11-25 23:16:43,062 - __main__ - INFO - ✅ AI Worker initialized successfully
+2025-11-25 23:16:43,062 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
+2025-11-25 23:16:45,053 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel

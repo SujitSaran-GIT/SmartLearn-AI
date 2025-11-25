@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Check, Star, Zap, Crown, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Check, Star, Zap, Crown, Sparkles, Loader2 } from 'lucide-react';
+import { paymentService } from '../services/payment.service';
 
 interface PricingPlan {
   id: string;
@@ -18,10 +19,66 @@ interface PricingPlan {
 
 const Pricing: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
+  const [userSubscription, setUserSubscription] = useState<any>(null);
+  const [loading, setLoading] = useState<string | null>(null); // Track which plan is being purchased
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserSubscription();
+  }, []);
+
+  const fetchUserSubscription = async () => {
+    try {
+      const data = await paymentService.getUserSubscription();
+      setUserSubscription(data);
+    } catch (error) {
+      console.error('Failed to fetch user subscription:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePlanPurchase = async (planId: string, planName: string) => {
+    if (loading) return; // Prevent multiple clicks
+
+    setLoading(planId);
+
+    try {
+      await paymentService.initiatePayment({
+        planType: planId as 'starter' | 'pro' | 'enterprise',
+        billingCycle,
+        onSuccess: (subscription) => {
+          setUserSubscription({
+            subscription,
+            planType: subscription.planType,
+          });
+          alert(`Successfully upgraded to ${planName}! 🎉`);
+          setLoading(null);
+        },
+        onError: (error) => {
+          console.error('Payment failed:', error);
+          alert('Payment failed. Please try again.');
+          setLoading(null);
+        },
+        onClose: () => {
+          setLoading(null);
+        },
+      });
+    } catch (error) {
+      console.error('Payment initiation failed:', error);
+      alert('Failed to initiate payment. Please try again.');
+      setLoading(null);
+    }
+  };
+
+  const handleContactSales = () => {
+    // You can implement this to open a contact form or redirect to contact page
+    window.open('mailto:sales@smartlearn.com?subject=Enterprise Plan Inquiry', '_blank');
+  };
 
   const pricingPlans: PricingPlan[] = [
     {
-      id: 'basic',
+      id: 'starter',
       name: 'Starter',
       description: 'Perfect for individual learners and students',
       monthlyPrice: 299,
@@ -98,6 +155,17 @@ const Pricing: React.FC = () => {
     return Math.round(yearlyPrice / 12);
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[var(--primary-500)]" />
+          <p className="text-[var(--text-secondary)]">Loading pricing plans...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -106,10 +174,18 @@ const Pricing: React.FC = () => {
           <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-4">
             Choose Your Learning Plan
           </h1>
-          <p className="text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-8">
-            Invest in your growth with affordable pricing designed for Indian learners. 
+          <p className="text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-6">
+            Invest in your growth with affordable pricing designed for Indian learners.
             Start free, upgrade when you're ready.
           </p>
+
+          {/* Current Subscription Status */}
+          {userSubscription?.subscription?.status === 'active' && (
+            <div className="inline-flex items-center bg-[var(--success-50)] text-[var(--success-800)] px-4 py-2 rounded-full text-sm font-medium dark:bg-[var(--success-900)] dark:text-[var(--success-300)]">
+              <Check className="w-4 h-4 mr-2" />
+              Current Plan: {paymentService.getPlanDisplayName(userSubscription.subscription.planType)} - Active until {new Date(userSubscription.subscription.expiresAt).toLocaleDateString()}
+            </div>
+          )}
 
           {/* Billing Toggle */}
           <div className="inline-flex items-center bg-[var(--bg-tertiary)] rounded-lg p-1 border border-[var(--border-primary)]">
@@ -214,17 +290,38 @@ const Pricing: React.FC = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <button
-                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all mb-8 ${
-                      plan.popular
-                        ? 'bg-gradient-to-r from-[var(--secondary-500)] to-[var(--accent-500)] hover:from-[var(--secondary-600)] hover:to-[var(--accent-600)] shadow-lg'
-                        : plan.bestValue
-                        ? 'bg-gradient-to-r from-[var(--warning-500)] to-[var(--accent-500)] hover:from-[var(--warning-600)] hover:to-[var(--accent-600)] shadow-lg'
-                        : 'bg-gradient-to-r from-[var(--primary-500)] to-[var(--secondary-500)] hover:from-[var(--primary-600)] hover:to-[var(--secondary-600)]'
-                    }`}
-                  >
-                    {plan.ctaText}
-                  </button>
+                  {plan.id === 'enterprise' ? (
+                    <button
+                      onClick={handleContactSales}
+                      className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all mb-8 bg-gradient-to-r from-[var(--warning-500)] to-[var(--accent-500)] hover:from-[var(--warning-600)] hover:to-[var(--accent-600)] shadow-lg`}
+                    >
+                      {plan.ctaText}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handlePlanPurchase(plan.id, plan.name)}
+                      disabled={loading === plan.id || (userSubscription?.subscription?.status === 'active' && userSubscription?.subscription?.planType === plan.id)}
+                      className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all mb-8 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                        plan.popular
+                          ? 'bg-gradient-to-r from-[var(--secondary-500)] to-[var(--accent-500)] hover:from-[var(--secondary-600)] hover:to-[var(--accent-600)] shadow-lg'
+                          : 'bg-gradient-to-r from-[var(--primary-500)] to-[var(--secondary-500)] hover:from-[var(--primary-600)] hover:to-[var(--secondary-600)]'
+                      }`}
+                    >
+                      {loading === plan.id ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Processing...</span>
+                        </>
+                      ) : userSubscription?.subscription?.status === 'active' && userSubscription?.subscription?.planType === plan.id ? (
+                        <>
+                          <Check className="w-5 h-5" />
+                          <span>Current Plan</span>
+                        </>
+                      ) : (
+                        <span>{plan.ctaText}</span>
+                      )}
+                    </button>
+                  )}
 
                   {/* Features */}
                   <div className="flex-1 space-y-4">

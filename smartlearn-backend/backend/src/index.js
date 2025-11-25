@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.routes.js';
 import fileRoutes from './routes/files.routes.js';
 import mcqRoutes from './routes/mcq.routes.js';
 import quizRoutes from './routes/quiz.routes.js';
+import paymentRoutes, { webhookRouter } from './routes/payment.routes.js';
 
 // Import middleware
 
@@ -137,6 +138,13 @@ const mcqLimiter = createDynamicRateLimiter(
   'Too many MCQ generation requests, please wait before making more requests.'
 );
 
+// Payment rate limiting - Very strict for security
+const paymentLimiter = createDynamicRateLimiter(
+  15 * 60 * 1000, // 15 minutes
+  5, // 5 payment requests per 15 minutes
+  'Too many payment requests, please wait before making more requests.'
+);
+
 // Apply rate limiters in order of specificity
 app.use('/api/', generalLimiter);
 app.use('/api/auth', authLimiter);
@@ -145,6 +153,7 @@ app.use('/api/auth/signup', loginLimiter);
 app.use('/api/quiz', quizLimiter);
 app.use('/api/files', fileLimiter);
 app.use('/api/mcq', mcqLimiter);
+app.use('/api/payment', paymentLimiter);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -164,6 +173,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/mcq', mcqRoutes);
 app.use('/api/quiz', quizRoutes);
+app.use('/api/payment', paymentRoutes);
+
+// Webhook routes (no authentication required)
+app.use('/webhooks', webhookRouter);
 
 // API info
 app.get('/api', (req, res) => {
@@ -178,6 +191,8 @@ app.get('/api', (req, res) => {
       files: '/api/files',
       mcq: '/api/mcq',
       quiz: '/api/quiz',
+      payment: '/api/payment',
+      webhooks: '/webhooks',
       health: '/health'
     }
   });

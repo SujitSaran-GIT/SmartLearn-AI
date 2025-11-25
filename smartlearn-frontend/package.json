@@ -16,6 +16,7 @@
     "@types/redux": "^3.6.31",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.548.0",
+    "razorpay": "^2.9.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",

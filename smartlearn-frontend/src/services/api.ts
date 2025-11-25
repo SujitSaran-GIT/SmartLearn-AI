@@ -351,6 +351,79 @@ class ApiService {
       method: 'DELETE',
     });
   }
+
+  // Payment endpoints
+  async createPaymentOrder(planType: string, billingCycle: string): Promise<{
+    success: boolean;
+    data: {
+      orderId: string;
+      amount: number;
+      currency: string;
+      planType: string;
+      billingCycle: string;
+    };
+  }> {
+    return this.request('/payment/create-order', {
+      method: 'POST',
+      body: JSON.stringify({ planType, billingCycle }),
+    });
+  }
+
+  async verifyPayment(paymentData: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+    planType: string;
+    billingCycle: string;
+  }): Promise<{
+    success: boolean;
+    data: {
+      subscription: {
+        id: string;
+        planType: string;
+        billingCycle: string;
+        status: string;
+        startedAt: string;
+        expiresAt: string;
+        amount: number;
+      };
+    };
+  }> {
+    return this.request('/payment/verify', {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+    });
+  }
+
+  async getUserSubscription(): Promise<{
+    success: boolean;
+    data: {
+      subscription: {
+        id: string;
+        planType: string;
+        billingCycle: string;
+        status: string;
+        startedAt: string;
+        expiresAt: string;
+        amount: number;
+      } | null;
+      planType: string;
+    };
+  }> {
+    return this.request('/payment/subscription');
+  }
+
+  async cancelSubscription(): Promise<{
+    success: boolean;
+    data: {
+      message: string;
+      subscription: any;
+    };
+  }> {
+    return this.request('/payment/cancel', {
+      method: 'POST',
+    });
+  }
 }
 
 export const apiService = new ApiService();

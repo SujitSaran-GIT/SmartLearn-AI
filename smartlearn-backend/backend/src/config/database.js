@@ -144,6 +144,24 @@ export const initDB = async () => {
         selected_index INTEGER NOT NULL,
         is_correct BOOLEAN NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )`,
+
+      `CREATE TABLE IF NOT EXISTS subscriptions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        plan_type VARCHAR(50) NOT NULL, -- 'starter', 'pro', 'enterprise'
+        billing_cycle VARCHAR(20) NOT NULL, -- 'monthly', 'yearly'
+        status VARCHAR(20) DEFAULT 'active', -- 'active', 'cancelled', 'expired'
+        razorpay_order_id VARCHAR(255),
+        razorpay_payment_id VARCHAR(255),
+        razorpay_signature VARCHAR(255),
+        amount INTEGER NOT NULL, -- in paise
+        currency VARCHAR(3) DEFAULT 'INR',
+        started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMP,
+        cancelled_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`
     ];
 
@@ -162,7 +180,9 @@ export const initDB = async () => {
       'CREATE INDEX IF NOT EXISTS idx_answers_attempt_id ON answers(attempt_id)',
       'CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)',
       'CREATE INDEX IF NOT EXISTS idx_files_status ON files(status)',
-      'CREATE INDEX IF NOT EXISTS idx_mcq_jobs_status ON mcq_jobs(status)'
+      'CREATE INDEX IF NOT EXISTS idx_mcq_jobs_status ON mcq_jobs(status)',
+      'CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id)',
+      'CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)'
     ];
 
     for (const indexSql of indexes) {
