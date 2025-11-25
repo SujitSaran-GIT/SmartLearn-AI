@@ -15,6 +15,8 @@ interface PaymentOptions {
 }
 
 export class PaymentService {
+  private isTestMode = import.meta.env.VITE_USE_MOCK_PAYMENTS === 'true';
+
   private loadRazorpayScript(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (window.Razorpay) {
@@ -31,8 +33,39 @@ export class PaymentService {
     });
   }
 
+  private async initiateMockPayment(options: PaymentOptions) {
+    // Simulate payment processing delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Mock successful payment response that matches backend pricing
+    const planAmounts = {
+      starter: { monthly: 29900, yearly: 299900 },
+      pro: { monthly: 79900, yearly: 799900 },
+      enterprise: { monthly: 199900, yearly: 1999900 }
+    };
+
+    const mockSubscription = {
+      id: `mock_sub_${Date.now()}`,
+      planType: options.planType,
+      billingCycle: options.billingCycle,
+      status: 'active',
+      startedAt: new Date().toISOString(),
+      expiresAt: options.billingCycle === 'monthly'
+        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
+        : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 365 days
+      amount: planAmounts[options.planType][options.billingCycle]
+    };
+
+    options.onSuccess?.(mockSubscription);
+  }
+
   async initiatePayment(options: PaymentOptions) {
     try {
+      // Use mock payment in test mode
+      if (this.isTestMode) {
+        return this.initiateMockPayment(options);
+      }
+
       // Load Razorpay SDK
       await this.loadRazorpayScript();
 
@@ -43,14 +76,14 @@ export class PaymentService {
       );
 
       if (!orderResponse.success) {
-        throw new Error(orderResponse.error || 'Failed to create payment order');
+        throw new Error((orderResponse as any).error || 'Failed to create payment order');
       }
 
       const { orderId, amount, currency, planType, billingCycle } = orderResponse.data;
 
       // Configure Razorpay options
       const razorpayOptions = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID || 'rzp_test_your_key_id_here', // Replace with your Razorpay key ID
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_your_key_id_here', // Replace with your Razorpay key ID
         amount: amount,
         currency: currency,
         name: 'SmartLearn',
@@ -70,7 +103,7 @@ export class PaymentService {
             if (verificationResponse.success) {
               options.onSuccess?.(verificationResponse.data.subscription);
             } else {
-              options.onError?.(new Error(verificationResponse.error || 'Payment verification failed'));
+              options.onError?.(new Error((verificationResponse as any).error || 'Payment verification failed'));
             }
           } catch (error) {
             console.error('Payment verification error:', error);

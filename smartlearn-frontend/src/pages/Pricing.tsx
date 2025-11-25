@@ -10,7 +10,6 @@ interface PricingPlan {
   yearlyPrice: number;
   savings: number;
   popular?: boolean;
-  bestValue?: boolean;
   features: string[];
   ctaText: string;
   icon: React.ReactNode;
@@ -71,11 +70,7 @@ const Pricing: React.FC = () => {
     }
   };
 
-  const handleContactSales = () => {
-    // You can implement this to open a contact form or redirect to contact page
-    window.open('mailto:sales@smartlearn.com?subject=Enterprise Plan Inquiry', '_blank');
-  };
-
+  
   const pricingPlans: PricingPlan[] = [
     {
       id: 'starter',
@@ -125,7 +120,6 @@ const Pricing: React.FC = () => {
       monthlyPrice: 1999,
       yearlyPrice: 19999,
       savings: 3989,
-      bestValue: true,
       features: [
         'Everything in Pro, plus:',
         'Unlimited storage',
@@ -137,7 +131,7 @@ const Pricing: React.FC = () => {
         'Advanced security features',
         'SLA guarantee'
       ],
-      ctaText: 'Contact Sales',
+      ctaText: 'Go Enterprise',
       icon: <Crown className="w-6 h-6" />,
       gradient: 'from-[var(--warning-500)] to-[var(--accent-500)]'
     }
@@ -230,7 +224,7 @@ const Pricing: React.FC = () => {
                   plan.popular
                     ? 'border-2 border-[var(--primary-500)] shadow-2xl'
                     : 'border border-[var(--border-primary)] shadow-lg'
-                } ${plan.bestValue ? 'ring-2 ring-[var(--accent-500)] ring-opacity-50' : ''}`}
+                } ${plan.popular ? 'ring-2 ring-[var(--accent-500)] ring-opacity-50' : ''}`}
               >
                 {/* Popular Badge */}
                 {plan.popular && (
@@ -242,8 +236,8 @@ const Pricing: React.FC = () => {
                   </div>
                 )}
 
-                {/* Best Value Badge */}
-                {plan.bestValue && (
+                {/* Best Value Badge for Enterprise */}
+                {plan.id === 'enterprise' && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <div className="bg-gradient-to-r from-[var(--warning-500)] to-[var(--accent-500)] text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg flex items-center space-x-1">
                       <Crown className="w-4 h-4 fill-current" />
@@ -252,6 +246,7 @@ const Pricing: React.FC = () => {
                   </div>
                 )}
 
+              
                 <div className="bg-[var(--bg-primary)] rounded-2xl p-8 h-full flex flex-col">
                   {/* Plan Header */}
                   <div className="text-center mb-8">
@@ -290,38 +285,31 @@ const Pricing: React.FC = () => {
                   </div>
 
                   {/* CTA Button */}
-                  {plan.id === 'enterprise' ? (
-                    <button
-                      onClick={handleContactSales}
-                      className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all mb-8 bg-gradient-to-r from-[var(--warning-500)] to-[var(--accent-500)] hover:from-[var(--warning-600)] hover:to-[var(--accent-600)] shadow-lg`}
-                    >
-                      {plan.ctaText}
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handlePlanPurchase(plan.id, plan.name)}
-                      disabled={loading === plan.id || (userSubscription?.subscription?.status === 'active' && userSubscription?.subscription?.planType === plan.id)}
-                      className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all mb-8 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                        plan.popular
-                          ? 'bg-gradient-to-r from-[var(--secondary-500)] to-[var(--accent-500)] hover:from-[var(--secondary-600)] hover:to-[var(--accent-600)] shadow-lg'
-                          : 'bg-gradient-to-r from-[var(--primary-500)] to-[var(--secondary-500)] hover:from-[var(--primary-600)] hover:to-[var(--secondary-600)]'
-                      }`}
-                    >
-                      {loading === plan.id ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          <span>Processing...</span>
-                        </>
-                      ) : userSubscription?.subscription?.status === 'active' && userSubscription?.subscription?.planType === plan.id ? (
-                        <>
-                          <Check className="w-5 h-5" />
-                          <span>Current Plan</span>
-                        </>
-                      ) : (
-                        <span>{plan.ctaText}</span>
-                      )}
-                    </button>
-                  )}
+                  <button
+                    onClick={() => handlePlanPurchase(plan.id, plan.name)}
+                    disabled={loading === plan.id || (userSubscription?.subscription?.status === 'active' && userSubscription?.subscription?.planType === plan.id)}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all mb-8 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                      plan.id === 'enterprise'
+                        ? 'bg-gradient-to-r from-[var(--warning-500)] to-[var(--accent-500)] hover:from-[var(--warning-600)] hover:to-[var(--accent-600)] shadow-lg'
+                        : plan.popular
+                        ? 'bg-gradient-to-r from-[var(--secondary-500)] to-[var(--accent-500)] hover:from-[var(--secondary-600)] hover:to-[var(--accent-600)] shadow-lg'
+                        : 'bg-gradient-to-r from-[var(--primary-500)] to-[var(--secondary-500)] hover:from-[var(--primary-600)] hover:to-[var(--secondary-600)]'
+                    }`}
+                  >
+                    {loading === plan.id ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Processing...</span>
+                      </>
+                    ) : userSubscription?.subscription?.status === 'active' && userSubscription?.subscription?.planType === plan.id ? (
+                      <>
+                        <Check className="w-5 h-5" />
+                        <span>Current Plan</span>
+                      </>
+                    ) : (
+                      <span>{plan.ctaText}</span>
+                    )}
+                  </button>
 
                   {/* Features */}
                   <div className="flex-1 space-y-4">
@@ -343,27 +331,92 @@ const Pricing: React.FC = () => {
 
         {/* Free Trial Section */}
         <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-[var(--primary-50)] to-[var(--secondary-50)] rounded-2xl p-8 border border-[var(--border-primary)] dark:from-[var(--primary-900)] dark:to-[var(--secondary-900)]">
-            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
-              Start with our Free Plan
-            </h2>
-            <p className="text-[var(--text-secondary)] mb-6 max-w-2xl mx-auto">
-              Get started immediately with our free tier. No credit card required. 
-              Experience the power of AI-powered learning with basic features.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <div className="text-left bg-[var(--bg-primary)] rounded-lg p-4 shadow-sm border border-[var(--border-primary)]">
-                <h4 className="font-semibold text-[var(--text-primary)]">Free Plan Includes:</h4>
-                <ul className="text-sm text-[var(--text-secondary)] mt-2 space-y-1">
-                  <li>• 2 quiz attempts per month</li>
-                  <li>• Basic AI features</li>
-                  <li>• 5MB file upload limit</li>
-                  <li>• 3-day history retention</li>
-                </ul>
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-primary)] border border-[var(--border-primary)] shadow-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] dark:from-gray-900 dark:via-slate-900 dark:to-gray-900 dark:border-gray-800">
+            {/* Background gradient effects */}
+            {/* <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 dark:from-blue-400/10 dark:via-purple-400/10 dark:to-pink-400/10"></div>
+            <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-[var(--primary-200)] to-[var(--secondary-200)] opacity-20 blur-3xl dark:from-[var(--primary-800)] dark:to-[var(--secondary-800)]"></div>
+            <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-tr from-[var(--accent-200)] to-[var(--warning-200)] opacity-20 blur-3xl dark:from-[var(--accent-800)] dark:to-[var(--warning-800)]"></div> */}
+
+            <div className="relative p-8 md:p-12">
+              {/* Icon */}
+              <div className="inline-flex items-center justify-center w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white shadow-lg">
+                <Zap className="w-8 h-8" />
               </div>
-              <button className="bg-[var(--bg-primary)] text-[var(--primary-600)] border border-[var(--primary-300)] px-8 py-4 rounded-xl font-semibold hover:bg-[var(--primary-50)] transition-colors shadow-sm dark:bg-[var(--primary-900)] dark:text-[var(--primary-400)] dark:border-[var(--primary-700)]">
-                Start Free Trial
-              </button>
+
+              <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4 bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text">
+                Start with our Free Plan
+              </h2>
+
+              <p className="text-[var(--text-secondary)] mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
+                Get started immediately with our free tier. No credit card required.
+                Experience the power of AI-powered learning with basic features.
+              </p>
+
+              <div className="flex flex-col lg:flex-row justify-center items-center gap-8 lg:gap-12">
+                {/* Free Plan Features Card */}
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                  <div className="relative bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-xl p-6 shadow-lg dark:bg-gray-800/50 dark:border-gray-700 backdrop-blur-sm">
+                    <div className="flex items-center space-x-2 mb-4">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-600 text-white">
+                        <Check className="w-5 h-5" />
+                      </div>
+                      <h4 className="font-bold text-[var(--text-primary)] text-lg">Free Plan Includes:</h4>
+                    </div>
+                    <ul className="space-y-3 text-left">
+                      <li className="flex items-center space-x-3">
+                        <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-600"></div>
+                        <span className="text-[var(--text-secondary)] text-sm">2 quiz attempts per month</span>
+                      </li>
+                      <li className="flex items-center space-x-3">
+                        <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-600"></div>
+                        <span className="text-[var(--text-secondary)] text-sm">Basic AI features</span>
+                      </li>
+                      <li className="flex items-center space-x-3">
+                        <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-600"></div>
+                        <span className="text-[var(--text-secondary)] text-sm">5MB file upload limit</span>
+                      </li>
+                      <li className="flex items-center space-x-3">
+                        <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-600"></div>
+                        <span className="text-[var(--text-secondary)] text-sm">3-day history retention</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <div className="flex flex-col items-center space-y-4">
+                  <button className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg hover:shadow-green-500/25 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/50">
+                    <span className="flex items-center space-x-2">
+                      <Zap className="w-5 h-5 group-hover:animate-pulse" />
+                      <span>Start Free Trial</span>
+                    </span>
+                    <div className="absolute inset-0 rounded-xl bg-white opacity-0 transition-opacity group-hover:opacity-10"></div>
+                  </button>
+
+                  <p className="text-sm text-[var(--text-secondary)] italic">
+                    No setup fees • Cancel anytime
+                  </p>
+                </div>
+              </div>
+
+              {/* Additional Trust Elements */}
+              <div className="mt-8 pt-8 border-t border-[var(--border-primary)]">
+                <div className="flex flex-wrap justify-center items-center gap-6 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <span className="text-[var(--text-secondary)]">Always free to start</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                    <span className="text-[var(--text-secondary)]">No credit card required</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                    <span className="text-[var(--text-secondary)]">Instant access</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

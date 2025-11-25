@@ -146,14 +146,14 @@ const paymentLimiter = createDynamicRateLimiter(
 );
 
 // Apply rate limiters in order of specificity
-app.use('/api/', generalLimiter);
-app.use('/api/auth', authLimiter);
-app.use('/api/auth/login', loginLimiter);
-app.use('/api/auth/signup', loginLimiter);
-app.use('/api/quiz', quizLimiter);
-app.use('/api/files', fileLimiter);
-app.use('/api/mcq', mcqLimiter);
-app.use('/api/payment', paymentLimiter);
+// app.use('/api/', generalLimiter);
+// app.use('/api/auth', authLimiter);
+// app.use('/api/auth/login', loginLimiter);
+// app.use('/api/auth/signup', loginLimiter);
+// app.use('/api/quiz', quizLimiter);
+// app.use('/api/files', fileLimiter);
+// app.use('/api/mcq', mcqLimiter);
+// app.use('/api/payment', paymentLimiter);
 
 // Health check
 app.get('/health', (req, res) => {
