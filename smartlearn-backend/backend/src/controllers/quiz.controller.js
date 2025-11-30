@@ -66,6 +66,7 @@ export const submitQuiz = async (req, res, next) => {
     const { quizId } = req.params;
     const userId = req.userId;
     const { answers } = req.body;
+    const subscriptionData = req.subscriptionData;
 
     // Verify quiz exists and belongs to user
     const quizResult = await client.query(
@@ -162,17 +163,28 @@ export const submitQuiz = async (req, res, next) => {
       total: questions.length
     });
 
+    const responseData = {
+      attemptId,
+      score: Math.round(score),
+      correctCount,
+      totalCount: questions.length,
+      percentage: Math.round(score),
+      answers: answerResults
+    };
+
+    // Add subscription data if available
+    if (subscriptionData) {
+      responseData.subscriptionInfo = {
+        remainingAttempts: subscriptionData.remainingAttempts,
+        monthlyLimit: subscriptionData.monthlyLimit,
+        currentAttempts: subscriptionData.currentAttempts + 1 // +1 for this attempt
+      };
+    }
+
     res.json({
       success: true,
       message: 'Quiz submitted successfully',
-      data: {
-        attemptId,
-        score: Math.round(score),
-        correctCount,
-        totalCount: questions.length,
-        percentage: Math.round(score),
-        answers: answerResults
-      }
+      data: responseData
     });
   } catch (error) {
     await client.query('ROLLBACK');
@@ -350,6 +362,7 @@ export const getQuizResults = async (req, res, next) => {
 export const getQuizAnalytics = async (req, res, next) => {
   try {
     const userId = req.userId;
+    const subscription = req.subscription;
     const { days = 30 } = req.query;
 
     const startDate = new Date();
@@ -387,11 +400,11 @@ export const getQuizAnalytics = async (req, res, next) => {
 
     // Get daily progress for the last 7 days
     const dailyProgressResult = await pool.query(
-      `SELECT 
+      `SELECT
          DATE(submitted_at) as date,
          AVG(score) as avg_score,
          COUNT(*) as attempts
-       FROM quiz_attempts 
+       FROM quiz_attempts
        WHERE user_id = $1 AND submitted_at >= $2
        GROUP BY DATE(submitted_at)
        ORDER BY date DESC
@@ -399,27 +412,129 @@ export const getQuizAnalytics = async (req, res, next) => {
       [userId, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)]
     );
 
+    // Determine analytics level based on subscription
+    const analyticsLevel = subscription?.planType === 'enterprise' ? 'enterprise' :
+                          subscription?.planType === 'pro' ? 'advanced' : 'basic';
+
+    const baseResponse = {
+      overview: {
+        totalQuizzes: parseInt(totalQuizzes.rows[0].count),
+        totalAttempts: parseInt(totalAttempts.rows[0].count),
+        averageScore: Math.round(parseFloat(averageScore.rows[0].avg_score || 0)),
+        successRate: Math.round((parseFloat(averageScore.rows[0].avg_score || 0) / 100 * 100))
+      },
+      recentQuizzes: recentQuizzes.rows.map(quiz => ({
+        id: quiz.id,
+        title: quiz.title,
+        created_at: quiz.created_at,
+        latest_score: quiz.latest_score ? Math.round(quiz.latest_score) : null,
+        totalAttempts: parseInt(quiz.attempt_count)
+      })),
+      dailyProgress: dailyProgressResult.rows.map(day => ({
+        date: day.date,
+        averageScore: Math.round(parseFloat(day.avg_score || 0)),
+        attempts: parseInt(day.attempts)
+      }))
+    };
+
+    // Add advanced analytics for Pro+ users
+    if (analyticsLevel !== 'basic') {
+      // Get difficulty distribution
+      const difficultyResult = await pool.query(
+        `SELECT
+           q.difficulty,
+           COUNT(*) as count,
+           AVG(a.is_correct::int) * 100 as accuracy_rate
+         FROM questions q
+         JOIN answers a ON q.id = a.question_id
+         JOIN quiz_attempts qa ON a.attempt_id = qa.id
+         WHERE qa.user_id = $1 AND qa.submitted_at >= $2
+         GROUP BY q.difficulty`,
+        [userId, startDate]
+      );
+
+      // Get performance trends
+      const performanceTrendResult = await pool.query(
+        `SELECT
+           DATE(submitted_at) as date,
+           AVG(score) as avg_score,
+           COUNT(*) as attempts,
+           AVG(correct_count::float / total_count * 100) as avg_accuracy
+         FROM quiz_attempts
+         WHERE user_id = $1 AND submitted_at >= $2
+         GROUP BY DATE(submitted_at)
+         ORDER BY date DESC
+         LIMIT 30`,
+        [userId, startDate]
+      );
+
+      baseResponse.advancedAnalytics = {
+        difficultyDistribution: difficultyResult.rows.map(row => ({
+          difficulty: row.difficulty,
+          count: parseInt(row.count),
+          accuracyRate: Math.round(parseFloat(row.accuracy_rate || 0))
+        })),
+        performanceTrends: performanceTrendResult.rows.map(row => ({
+          date: row.date,
+          averageScore: Math.round(parseFloat(row.avg_score || 0)),
+          attempts: parseInt(row.attempts),
+          accuracy: Math.round(parseFloat(row.avg_accuracy || 0))
+        }))
+      };
+    }
+
+    // Add enterprise-level analytics
+    if (analyticsLevel === 'enterprise') {
+      // Get detailed performance metrics
+      const detailedMetricsResult = await pool.query(
+        `SELECT
+           DATE_PART('hour', submitted_at) as hour_of_day,
+           AVG(score) as avg_score,
+           COUNT(*) as attempts
+         FROM quiz_attempts
+         WHERE user_id = $1 AND submitted_at >= $2
+         GROUP BY DATE_PART('hour', submitted_at)
+         ORDER BY hour_of_day`,
+        [userId, startDate]
+      );
+
+      // Get subject/topic performance (if we had categories)
+      const improvementSuggestion = await pool.query(
+        `SELECT
+           q.difficulty,
+           AVG(a.is_correct::int) * 100 as avg_accuracy,
+           COUNT(*) as total_attempts
+         FROM questions q
+         JOIN answers a ON q.id = a.question_id
+         JOIN quiz_attempts qa ON a.attempt_id = qa.id
+         WHERE qa.user_id = $1 AND a.is_correct = false AND qa.submitted_at >= $2
+         GROUP BY q.difficulty
+         ORDER BY avg_accuracy ASC
+         LIMIT 3`,
+        [userId, startDate]
+      );
+
+      baseResponse.enterpriseAnalytics = {
+        performanceByTimeOfDay: detailedMetricsResult.rows.map(row => ({
+          hour: parseInt(row.hour_of_day),
+          averageScore: Math.round(parseFloat(row.avg_score || 0)),
+          attempts: parseInt(row.attempts)
+        })),
+        improvementAreas: improvementSuggestionResult.rows.map(row => ({
+          difficulty: row.difficulty,
+          accuracy: Math.round(parseFloat(row.avg_accuracy || 0)),
+          totalAttempts: parseInt(row.total_attempts),
+          recommendation: `Focus on ${row.difficulty} level questions to improve overall performance`
+        }))
+      };
+    }
+
     res.json({
       success: true,
       data: {
-        overview: {
-          totalQuizzes: parseInt(totalQuizzes.rows[0].count),
-          totalAttempts: parseInt(totalAttempts.rows[0].count),
-          averageScore: Math.round(parseFloat(averageScore.rows[0].avg_score || 0)),
-          successRate: Math.round((parseFloat(averageScore.rows[0].avg_score || 0) / 100 * 100))
-        },
-        recentQuizzes: recentQuizzes.rows.map(quiz => ({
-          id: quiz.id,
-          title: quiz.title,
-          created_at: quiz.created_at,
-          latest_score: quiz.latest_score ? Math.round(quiz.latest_score) : null,
-          totalAttempts: parseInt(quiz.attempt_count)
-        })),
-        dailyProgress: dailyProgressResult.rows.map(day => ({
-          date: day.date,
-          averageScore: Math.round(parseFloat(day.avg_score || 0)),
-          attempts: parseInt(day.attempts)
-        }))
+        analyticsLevel,
+        planType: subscription?.planType || 'free',
+        ...baseResponse
       }
     });
   } catch (error) {

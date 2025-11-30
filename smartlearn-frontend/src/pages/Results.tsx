@@ -7,6 +7,7 @@ import type { RootState } from '../types';
 import { getQuizResults } from '../redux/slices/quizSlice';
 import { Trophy, CheckCircle, XCircle, Clock, Target, TrendingUp, RotateCcw, Home, BookOpen } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import ExportButton from '../components/subscription/ExportButton';
 
 const Results: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -321,7 +322,7 @@ const Results: React.FC = () => {
             <Home className="w-5 h-5" />
             Back to Dashboard
           </button>
-          
+
           <button
             onClick={() => navigate(`/quiz/${quizId}/take`)}
             className="px-8 py-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold flex items-center justify-center gap-2"
@@ -329,7 +330,7 @@ const Results: React.FC = () => {
             <RotateCcw className="w-5 h-5" />
             Retake Quiz
           </button>
-          
+
           <button
             onClick={() => navigate('/quizzes')}
             className="px-8 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold flex items-center justify-center gap-2"
@@ -337,6 +338,13 @@ const Results: React.FC = () => {
             <Target className="w-5 h-5" />
             View All Quizzes
           </button>
+
+          <ExportButton
+            quizId={quizId!}
+            quizTitle={quizTitle}
+            className="px-8 py-4"
+            size="lg"
+          />
         </motion.div>
 
         {/* Attempt History */}

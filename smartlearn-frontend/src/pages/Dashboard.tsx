@@ -9,6 +9,7 @@ import StatCard from '../components/dashboard/StatCard';
 import { Activity, ArrowUp, BarChart2, CheckCircle, Clock, FileText, TrendingUp } from 'lucide-react';
 import RecentQuizzes from '../components/dashboard/RecentQuizzes';
 import ProgressChart from '../components/dashboard/ProgrssChart';
+import UsageIndicator from '../components/subscription/UsageIndicator';
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -206,7 +207,7 @@ const Dashboard: React.FC = () => {
         </motion.div>
 
         {/* Charts and Recent Quizzes */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Progress Chart */}
           <motion.div
             className="lg:col-span-2"
@@ -224,6 +225,15 @@ const Dashboard: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <RecentQuizzes quizzes={recentQuizzes} />
+          </motion.div>
+
+          {/* Subscription Usage */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <UsageIndicator type="quiz" />
           </motion.div>
         </div>
 

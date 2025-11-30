@@ -5,15 +5,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { AppDispatch } from '../redux/store';
 import type { RootState } from '../types';
 import { getQuiz, submitQuiz, clearCurrentQuiz } from '../redux/slices/quizSlice';
-import { CheckCircle, XCircle, Clock, ChevronLeft, ChevronRight, Flag, Send } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, ChevronLeft, ChevronRight, Flag, Send, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { useSubscription } from '../contexts/SubscriptionContext';
+import PermissionGuard from '../components/subscription/PermissionGuard';
+import UpgradePrompt from '../components/subscription/UpgradePrompt';
 
 const TakeQuiz: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { quizId } = useParams<{ quizId: string }>();
-  
+
   const { currentQuiz, loading, error } = useSelector((state: RootState) => state.quiz);
+  const { canAttemptQuiz, remainingAttempts, refreshSubscription } = useSubscription();
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [questionId: string]: number }>({});
@@ -154,10 +158,65 @@ const TakeQuiz: React.FC = () => {
   const answeredCount = Object.keys(answers).length;
 
   return (
-    <div className="min-h-screen bg-bg-tertiary py-8">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
+    <PermissionGuard
+      feature="unlimited_quiz"
+      fallback={
+        <div className="min-h-screen bg-bg-tertiary py-8">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            {!canAttemptQuiz && (
+              <div className="mb-6">
+                <UpgradePrompt
+                  feature="quiz_attempts"
+                  upgradeMessage={`You've used all your quiz attempts for this month. Upgrade to Pro for unlimited quizzes!`}
+                />
+              </div>
+            )}
+            <div className="bg-bg-secondary rounded-xl shadow-lg p-8 text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-red-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-text-primary mb-2">
+                Quiz Attempt Limit Reached
+              </h2>
+              <p className="text-text-secondary mb-6">
+                {remainingAttempts !== null
+                  ? `You have ${remainingAttempts} quiz attempts remaining this month.`
+                  : 'Upgrade your plan to continue taking quizzes.'
+                }
+              </p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => navigate('/pricing')}
+                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                >
+                  Upgrade Plan
+                </button>
+                <button
+                  onClick={() => navigate('/quizzes')}
+                  className="px-6 py-2 border border-border-primary rounded-lg hover:bg-bg-tertiary transition-colors"
+                >
+                  Back to Quizzes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <div className="min-h-screen bg-bg-tertiary py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Subscription Banner */}
+          {remainingAttempts !== null && remainingAttempts <= 2 && (
+            <div className="mb-6">
+              <UpgradePrompt
+                feature="quiz_attempts"
+                upgradeMessage={`You have ${remainingAttempts} quiz attempt${remainingAttempts === 1 ? '' : 's'} remaining this month. Upgrade for unlimited attempts!`}
+              />
+            </div>
+          )}
+
+          {/* Header */}
+          <motion.div
           className="bg-bg-secondary rounded-xl shadow-lg p-6 mb-6"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

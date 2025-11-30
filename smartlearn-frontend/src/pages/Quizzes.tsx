@@ -7,6 +7,7 @@ import type { RootState } from '../types';
 import { getUserQuizzes, deleteQuiz } from '../redux/slices/quizSlice';
 import { BookOpen, Play, Trash2, Calendar, FileText, Target, TrendingUp } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import ExportButton from '../components/subscription/ExportButton';
 
 const Quizzes: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -201,7 +202,7 @@ const Quizzes: React.FC = () => {
                         <Play className="w-5 h-5" />
                         Take Quiz
                       </button>
-                      
+
                       {(quiz._count?.attempts || 0) > 0 && (
                         <button
                           onClick={() => handleViewResults(quiz.id)}
@@ -210,6 +211,15 @@ const Quizzes: React.FC = () => {
                           <TrendingUp className="w-5 h-5" />
                           View Results
                         </button>
+                      )}
+
+                      {(quiz._count?.attempts || 0) > 0 && (
+                        <ExportButton
+                          quizId={quiz.id}
+                          quizTitle={quiz.title}
+                          variant="icon"
+                          size="sm"
+                        />
                       )}
                     </div>
                   </div>

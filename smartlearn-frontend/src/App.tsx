@@ -23,6 +23,7 @@ import { tokenRefreshManager } from './utils/tokenRefresh';
 import { useEffect } from 'react';
 import { logout } from './redux/slices/authSlice';
 import { useAppDispatch } from './redux/store';
+import SubscriptionProvider, { useSubscription } from './contexts/SubscriptionContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -66,23 +67,107 @@ const App = () => {
   }, [isAuthenticated, dispatch]);
 
   return (
-      <Routes>
+    <Routes>
         <Route path="/auth" element={<AuthComponent />} />
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/auth" replace />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Layout currentPage="dashboard"><Dashboard /></Layout></ProtectedRoute>} />
-        <Route path="/upload" element={<ProtectedRoute><Layout currentPage="upload"><UploadFile /></Layout></ProtectedRoute>} />
-        <Route path="/attempt-quiz" element={<ProtectedRoute><Layout currentPage="attempt-quiz"><AttemptQuiz /></Layout></ProtectedRoute>} />
-        <Route path="/generate" element={<ProtectedRoute><Layout currentPage="generate"><GenerateQuiz /></Layout></ProtectedRoute>} />
-        <Route path="/quizzes" element={<ProtectedRoute><Layout currentPage="quizzes"><Quizzes /></Layout></ProtectedRoute>} />
-        <Route path="/quiz/:quizId/take" element={<ProtectedRoute><Layout currentPage="quiz"><TakeQuiz /></Layout></ProtectedRoute>} />
-        <Route path="/results/:quizId" element={<ProtectedRoute><Layout currentPage="results"><Results /></Layout></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><Layout currentPage="settings"><Settings /></Layout></ProtectedRoute>} />
-        <Route path="/help" element={<ProtectedRoute><Layout currentPage="help"><HelpSupport /></Layout></ProtectedRoute>} />
-        <Route path="/generate-quiz/:fileId" element={<ProtectedRoute><Layout currentPage="Generate Quiz"><QuizGeneration /></Layout></ProtectedRoute>} />
-        <Route path="/exam/:jobId" element={<ProtectedRoute><Layout currentPage="Exam"><ExamScreen /></Layout></ProtectedRoute>} />
-        <Route path="/pricing" element={<ProtectedRoute><Layout currentPage="Pricing"><Pricing /></Layout></ProtectedRoute>} />
-        <Route path="/history" element={<ProtectedRoute><Layout currentPage="History"><History /></Layout></ProtectedRoute>} />
-        <Route path="/leaderboard" element={<ProtectedRoute><Layout currentPage="Leaderboard"><Leaderboard /></Layout></ProtectedRoute>} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="dashboard"><Dashboard /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/upload" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="upload"><UploadFile /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/attempt-quiz" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="attempt-quiz"><AttemptQuiz /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/generate" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="generate"><GenerateQuiz /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/quizzes" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="quizzes"><Quizzes /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/quiz/:quizId/take" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="quiz"><TakeQuiz /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/results/:quizId" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="results"><Results /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="settings"><Settings /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/help" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="help"><HelpSupport /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/generate-quiz/:fileId" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="Generate Quiz"><QuizGeneration /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/exam/:jobId" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="Exam"><ExamScreen /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/pricing" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="Pricing"><Pricing /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/history" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="History"><History /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
+        <Route path="/leaderboard" element={
+          <ProtectedRoute>
+            <SubscriptionProvider>
+              <Layout currentPage="Leaderboard"><Leaderboard /></Layout>
+            </SubscriptionProvider>
+          </ProtectedRoute>
+        } />
       </Routes>
   );
 };

@@ -424,6 +424,94 @@ class ApiService {
       method: 'POST',
     });
   }
+
+  // Subscription endpoints
+  async getUserSubscriptionDetails(): Promise<{
+    success: boolean;
+    data: {
+      subscription: {
+        planType: string;
+        status: string;
+      };
+      limits: {
+        quizAttemptsPerMonth: number | null;
+        fileUploadSizeMB: number | null;
+        historyRetentionDays: number | null;
+        analyticsLevel: string;
+        canExportPDF: boolean;
+        features: string[];
+      };
+      usage: {
+        monthlyQuizAttempts: number;
+        monthlyFileUsage: number;
+        fileUploadLimit: number | null;
+      };
+      canAttemptQuiz: boolean;
+      remainingAttempts: number | null;
+    };
+  }> {
+    return this.request('/subscription/details');
+  }
+
+  async getUserUsageStats(): Promise<{
+    success: boolean;
+    data: {
+      subscription: {
+        planType: string;
+        status: string;
+      };
+      limits: any;
+      usage: {
+        monthlyQuizAttempts: number;
+        monthlyFileUsage: number;
+        fileUploadLimit: number | null;
+      };
+      canAttemptQuiz: boolean;
+      remainingAttempts: number | null;
+      recentActivity: {
+        totalQuizAttempts: number;
+        recentAttempts: Array<{
+          id: string;
+          quizTitle: string;
+          score: number;
+          submittedAt: string;
+        }>;
+      };
+    };
+  }> {
+    return this.request('/subscription/usage');
+  }
+
+  async checkUserPermissions(action: string): Promise<{
+    success: boolean;
+    data: {
+      action: string;
+      canPerform: boolean;
+      message: string;
+      planType: string;
+      upgradeRequired: boolean;
+    };
+  }> {
+    return this.request(`/subscription/check-permissions?action=${action}`);
+  }
+
+  async exportQuizResultsToPDF(quizId: string): Promise<Blob> {
+    const url = `${this.baseURL}/export/quiz/${quizId}/pdf`;
+    const token = localStorage.getItem('accessToken');
+
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'PDF export failed');
+    }
+
+    return response.blob();
+  }
 }
 
 export const apiService = new ApiService();

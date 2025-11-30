@@ -229,3 +229,7 @@
 2025-11-25 23:16:43,062 - __main__ - INFO - ✅ AI Worker initialized successfully
 2025-11-25 23:16:43,062 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
 2025-11-25 23:16:45,053 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel
+2025-11-26 02:04:50,216 - __main__ - INFO - 🤖 Using Groq LLM provider
+2025-11-26 02:04:50,216 - __main__ - INFO - ✅ AI Worker initialized successfully
+2025-11-26 02:04:50,217 - __main__ - INFO - 🔄 Starting Redis Pub/Sub Worker...
+2025-11-26 02:04:52,269 - __main__ - INFO - ✅ Listening for jobs on 'mcq_jobs' channel

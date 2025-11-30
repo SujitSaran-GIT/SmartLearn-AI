@@ -15,6 +15,8 @@ import fileRoutes from './routes/files.routes.js';
 import mcqRoutes from './routes/mcq.routes.js';
 import quizRoutes from './routes/quiz.routes.js';
 import paymentRoutes, { webhookRouter } from './routes/payment.routes.js';
+import subscriptionRoutes from './routes/subscription.routes.js';
+import exportRoutes from './routes/export.routes.js';
 
 // Import middleware
 
@@ -174,6 +176,8 @@ app.use('/api/files', fileRoutes);
 app.use('/api/mcq', mcqRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/subscription', subscriptionRoutes);
+app.use('/api/export', exportRoutes);
 
 // Webhook routes (no authentication required)
 app.use('/webhooks', webhookRouter);

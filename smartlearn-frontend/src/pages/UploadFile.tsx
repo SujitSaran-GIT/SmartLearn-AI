@@ -26,11 +26,14 @@ import {
 } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { apiService } from '../services/api';
+import UsageIndicator from '../components/subscription/UsageIndicator';
+import { useSubscription } from '../contexts/SubscriptionContext';
 
 const UploadFile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { files, loading, error, uploadProgress, pagination } = useSelector((state: RootState) => state.files);
+  const { limits, formatFileSizeLimit } = useSubscription();
 
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -89,9 +92,9 @@ const UploadFile: React.FC = () => {
       return;
     }
 
-    const maxSize = 50 * 1024 * 1024;
+    const maxSize = limits?.fileUploadSizeMB ? limits.fileUploadSizeMB * 1024 * 1024 : 50 * 1024 * 1024;
     if (file.size > maxSize) {
-      setUploadError(`File size must be less than ${maxSize / 1024 / 1024}MB`);
+      setUploadError(`File size must be less than ${formatFileSizeLimit()}`);
       return;
     }
 
@@ -342,13 +345,14 @@ const UploadFile: React.FC = () => {
           </button>
         </motion.div>
 
-        {/* Files List Section */}
-        <motion.div
-          className="bg-bg-secondary rounded-xl shadow-lg overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Files List Section */}
+          <motion.div
+            className="lg:col-span-3 bg-bg-secondary rounded-xl shadow-lg overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
           <div className="p-6 border-b border-border-primary">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <h2 className="text-xl font-bold text-text-primary">Your Files</h2>
@@ -521,6 +525,16 @@ const UploadFile: React.FC = () => {
               )}
             </>
           )}
+        </motion.div>
+
+        {/* Usage Sidebar */}
+        <motion.div
+          className="lg:col-span-1"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <UsageIndicator type="file" />
         </motion.div>
       </div>
     </div>
