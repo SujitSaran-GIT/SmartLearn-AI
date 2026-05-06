@@ -231,8 +231,8 @@ const UploadFile: React.FC = () => {
           >
             <div
               className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${dragActive
-                  ? 'border-primary-500 bg-primary-50'
-                  : 'border-border-primary hover:border-primary-400 hover:bg-bg-tertiary'
+                ? 'border-primary-500 bg-primary-50'
+                : 'border-border-primary hover:border-primary-400 hover:bg-bg-tertiary'
                 }`}
             >
               <Upload className={`w-16 h-16 mx-auto mb-4 ${dragActive ? 'text-primary-600' : 'text-text-tertiary'}`} />
@@ -327,8 +327,8 @@ const UploadFile: React.FC = () => {
             onClick={handleUpload}
             disabled={!selectedFile || loading}
             className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${selectedFile && !loading
-                ? 'bg-primary-600 text-white hover:bg-primary-700'
-                : 'bg-bg-tertiary text-text-tertiary cursor-not-allowed'
+              ? 'bg-primary-600 text-white hover:bg-primary-700'
+              : 'bg-bg-tertiary text-text-tertiary cursor-not-allowed'
               }`}
           >
             {loading ? (
@@ -353,189 +353,190 @@ const UploadFile: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-          <div className="p-6 border-b border-border-primary">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <h2 className="text-xl font-bold text-text-primary">Your Files</h2>
+            <div className="p-6 border-b border-border-primary">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h2 className="text-xl font-bold text-text-primary">Your Files</h2>
 
-              {/* Search and Filter Controls */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                {/* Search Input */}
-                <div className="relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary" />
-                  <input
-                    type="text"
-                    placeholder="Search files..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-border-primary rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-bg-primary text-text-primary"
-                  />
-                </div>
+                {/* Search and Filter Controls */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Search Input */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary" />
+                    <input
+                      type="text"
+                      placeholder="Search files..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 pr-4 py-2 border border-border-primary rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-bg-primary text-text-primary"
+                    />
+                  </div>
 
-                {/* Filter Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setShowFilters(!showFilters)}
-                    className="flex items-center gap-2 px-4 py-2 border border-border-primary rounded-lg hover:bg-bg-tertiary text-text-primary"
-                  >
-                    <Filter className="w-4 h-4" />
-                    <span>Filter</span>
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
+                  {/* Filter Dropdown */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="flex items-center gap-2 px-4 py-2 border border-border-primary rounded-lg hover:bg-bg-tertiary text-text-primary"
+                    >
+                      <Filter className="w-4 h-4" />
+                      <span>Filter</span>
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
 
-                  {showFilters && (
-                    <div className="absolute right-0 mt-2 w-48 bg-bg-secondary border border-border-primary rounded-lg shadow-lg z-10">
-                      <div className="p-2">
-                        <label className="block text-sm font-medium text-text-primary mb-2">
-                          Status
-                        </label>
-                        <select
-                          value={statusFilter}
-                          onChange={(e) => setStatusFilter(e.target.value)}
-                          className="w-full p-2 border border-border-primary rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-bg-primary text-text-primary"
-                        >
-                          {statusOptions.map(option => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
+                    {showFilters && (
+                      <div className="absolute right-0 mt-2 w-48 bg-bg-secondary border border-border-primary rounded-lg shadow-lg z-10">
+                        <div className="p-2">
+                          <label className="block text-sm font-medium text-text-primary mb-2">
+                            Status
+                          </label>
+                          <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="w-full p-2 border border-border-primary rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-bg-primary text-text-primary"
+                          >
+                            {statusOptions.map(option => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {loading && files.length === 0 ? (
-            <LoadingSpinner />
-          ) : filteredFiles.length === 0 ? (
-            <div className="p-12 text-center">
-              <FileText className="w-16 h-16 text-text-tertiary mx-auto mb-4" />
-              <p className="text-text-secondary">
-                {searchTerm || statusFilter !== 'all' ? 'No files match your search criteria' : 'No files uploaded yet'}
-              </p>
-              {(searchTerm || statusFilter !== 'all') && (
-                <button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setStatusFilter('all');
-                  }}
-                  className="mt-2 text-primary-600 hover:text-primary-700"
-                >
-                  Clear filters
-                </button>
-              )}
-            </div>
-          ) : (
-            <>
-              <div className="divide-y divide-border-primary">
-                {filteredFiles.map((file, index) => (
-                  <motion.div
-                    key={file.id}
-                    className="p-6 hover:bg-bg-tertiary transition-colors"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+            {loading && files.length === 0 ? (
+              <LoadingSpinner />
+            ) : filteredFiles.length === 0 ? (
+              <div className="p-12 text-center">
+                <FileText className="w-16 h-16 text-text-tertiary mx-auto mb-4" />
+                <p className="text-text-secondary">
+                  {searchTerm || statusFilter !== 'all' ? 'No files match your search criteria' : 'No files uploaded yet'}
+                </p>
+                {(searchTerm || statusFilter !== 'all') && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setStatusFilter('all');
+                    }}
+                    className="mt-2 text-primary-600 hover:text-primary-700"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <FileText className="w-10 h-10 text-primary-600 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-text-primary truncate">{file.filename}</h3>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-text-secondary flex-wrap">
-                            <span>{formatFileSize(file.size)}</span>
-                            {file.num_pages && <span>{file.num_pages} pages</span>}
-                            <span>{new Date(file.created_at).toLocaleDateString()}</span>
-                            {file.mime_type && (
-                              <span className="px-2 py-1 bg-bg-tertiary text-text-secondary rounded text-xs">
-                                {file.mime_type.split('/')[1]?.toUpperCase()}
-                              </span>
-                            )}
+                    Clear filters
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="divide-y divide-border-primary">
+                  {filteredFiles.map((file, index) => (
+                    <motion.div
+                      key={file.id}
+                      className="p-6 hover:bg-bg-tertiary transition-colors"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <FileText className="w-10 h-10 text-primary-600 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-text-primary truncate">{file.filename}</h3>
+                            <div className="flex items-center gap-4 mt-1 text-sm text-text-secondary flex-wrap">
+                              <span>{formatFileSize(file.size)}</span>
+                              {file.num_pages && <span>{file.num_pages} pages</span>}
+                              <span>{new Date(file.created_at).toLocaleDateString()}</span>
+                              {file.mime_type && (
+                                <span className="px-2 py-1 bg-bg-tertiary text-text-secondary rounded text-xs">
+                                  {file.mime_type.split('/')[1]?.toUpperCase()}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 flex-shrink-0">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${getStatusColor(file.status)}`}>
+                            {getStatusIcon(file.status)}
+                            {file.status}
+                          </span>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-2">
+                            {/* Download Button */}
+                            <button
+                              onClick={() => handleDownload(file.id, file.filename)}
+                              disabled={downloadingFileId === file.id}
+                              className="p-2 text-text-tertiary hover:text-primary-600 transition-colors disabled:opacity-50"
+                              title="Download file"
+                            >
+                              {downloadingFileId === file.id ? (
+                                <div className="w-4 h-4 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+                              ) : (
+                                <Download className="w-4 h-4" />
+                              )}
+                            </button>
+
+                            {/* Delete Button */}
+                            <button
+                              onClick={() => handleDelete(file.id)}
+                              className="p-2 text-text-tertiary hover:text-error-500 transition-colors"
+                              title="Delete file"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${getStatusColor(file.status)}`}>
-                          {getStatusIcon(file.status)}
-                          {file.status}
-                        </span>
-
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-2">
-                          {/* Download Button */}
-                          <button
-                            onClick={() => handleDownload(file.id, file.filename)}
-                            disabled={downloadingFileId === file.id}
-                            className="p-2 text-text-tertiary hover:text-primary-600 transition-colors disabled:opacity-50"
-                            title="Download file"
-                          >
-                            {downloadingFileId === file.id ? (
-                              <div className="w-4 h-4 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
-                            ) : (
-                              <Download className="w-4 h-4" />
-                            )}
-                          </button>
-
-                          {/* Delete Button */}
-                          <button
-                            onClick={() => handleDelete(file.id)}
-                            className="p-2 text-text-tertiary hover:text-error-500 transition-colors"
-                            title="Delete file"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
-                <div className="p-6 border-t border-border-primary flex items-center justify-between">
-                  <div className="text-sm text-text-secondary">
-                    Showing {((currentPage - 1) * (pagination.limit || 10)) + 1} to{' '}
-                    {Math.min(currentPage * (pagination.limit || 10), pagination.total)} of{' '}
-                    {pagination.total} files
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                      disabled={currentPage === 1}
-                      className="px-4 py-2 bg-bg-tertiary text-text-secondary rounded-lg hover:bg-bg-quaternary disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Previous
-                    </button>
-                    <span className="text-text-secondary mx-2">
-                      Page {currentPage} of {pagination.totalPages}
-                    </span>
-                    <button
-                      onClick={() => setCurrentPage(prev => Math.min(pagination.totalPages, prev + 1))}
-                      disabled={currentPage === pagination.totalPages}
-                      className="px-4 py-2 bg-bg-tertiary text-text-secondary rounded-lg hover:bg-bg-quaternary disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Next
-                    </button>
-                  </div>
+                    </motion.div>
+                  ))}
                 </div>
-              )}
-            </>
-          )}
-        </motion.div>
 
-        {/* Usage Sidebar */}
-        <motion.div
-          className="lg:col-span-1"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <UsageIndicator type="file" />
-        </motion.div>
+                {/* Pagination */}
+                {pagination && pagination.totalPages > 1 && (
+                  <div className="p-6 border-t border-border-primary flex items-center justify-between">
+                    <div className="text-sm text-text-secondary">
+                      Showing {((currentPage - 1) * (pagination.limit || 10)) + 1} to{' '}
+                      {Math.min(currentPage * (pagination.limit || 10), pagination.total)} of{' '}
+                      {pagination.total} files
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-bg-tertiary text-text-secondary rounded-lg hover:bg-bg-quaternary disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Previous
+                      </button>
+                      <span className="text-text-secondary mx-2">
+                        Page {currentPage} of {pagination.totalPages}
+                      </span>
+                      <button
+                        onClick={() => setCurrentPage(prev => Math.min(pagination.totalPages, prev + 1))}
+                        disabled={currentPage === pagination.totalPages}
+                        className="px-4 py-2 bg-bg-tertiary text-text-secondary rounded-lg hover:bg-bg-quaternary disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </motion.div>
+
+          {/* Usage Sidebar */}
+          <motion.div
+            className="lg:col-span-1"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <UsageIndicator type="file" />
+          </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,8 @@
 export const SUBSCRIPTION_LIMITS = {
   free: {
     quizAttemptsPerMonth: 3,
-    fileUploadSizeMB: 5,
+    fileUploadSizeMB: 10,
+    filesPerMonth: 3,
     historyRetentionDays: 3,
     analyticsLevel: 'basic',
     canExportPDF: false,
@@ -11,6 +12,7 @@ export const SUBSCRIPTION_LIMITS = {
   starter: {
     quizAttemptsPerMonth: 10,
     fileUploadSizeMB: 10,
+    filesPerMonth: 10,
     historyRetentionDays: 7,
     analyticsLevel: 'basic',
     canExportPDF: false,
@@ -19,6 +21,7 @@ export const SUBSCRIPTION_LIMITS = {
   pro: {
     quizAttemptsPerMonth: null, // unlimited
     fileUploadSizeMB: 100,
+    filesPerMonth: null, // unlimited
     historyRetentionDays: 30,
     analyticsLevel: 'advanced',
     canExportPDF: true,
@@ -27,6 +30,7 @@ export const SUBSCRIPTION_LIMITS = {
   enterprise: {
     quizAttemptsPerMonth: null, // unlimited
     fileUploadSizeMB: null, // unlimited
+    filesPerMonth: null, // unlimited
     historyRetentionDays: null, // unlimited
     analyticsLevel: 'enterprise',
     canExportPDF: true,
@@ -64,4 +68,10 @@ export const getHistoryRetentionDate = (subscription) => {
   const date = new Date();
   date.setDate(date.getDate() - limits.historyRetentionDays);
   return date;
+};
+
+// Get monthly file upload count limit
+export const getMonthlyFileUploadLimit = (subscription) => {
+  const limits = getUserSubscriptionLimits(subscription);
+  return limits.filesPerMonth;
 };

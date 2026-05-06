@@ -1,0 +1,4 @@
+venv
+ai-worker.log
+.env
+.env.*

@@ -8,7 +8,7 @@ import { quizSubmissionSchema, validateRequest } from "../middleware/validate.js
 const router = Router();
 
 router.get('/', authenticateToken, applyHistoryRetention, getUserQuizzes);
-router.get('/analytics', authenticateToken, checkFeatureAccess('advanced_analytics'), getQuizAnalytics);
+router.get('/analytics', authenticateToken, checkFeatureAccess('basic_analytics'), getQuizAnalytics);
 router.get('/:quizId', authenticateToken, getQuiz);
 router.get('/:quizId/results', authenticateToken, applyHistoryRetention, getQuizResults);
 router.post('/:quizId/submit', authenticateToken, checkQuizAttemptLimit, validateRequest(quizSubmissionSchema), submitQuiz);

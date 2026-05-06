@@ -109,10 +109,10 @@
 [data-theme="dark"],
 .dark {
   /* Background Colors */
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --bg-quaternary: #475569;
+  --bg-primary: #000000;
+  --bg-secondary: #010307;
+  --bg-tertiary: #000000;
+  --bg-quaternary: #080809;
 
   /* Text Colors */
   --text-primary: #f1f5f9;

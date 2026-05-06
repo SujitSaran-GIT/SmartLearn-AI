@@ -32,13 +32,14 @@ export const checkQuizAttemptLimit = async (req, res, next) => {
   }
 };
 
-// Middleware to check file upload size limit
+// Middleware to check file upload size limit and monthly file count
 export const checkFileUploadLimit = async (req, res, next) => {
   try {
     const userId = req.userId;
     const subscription = await SubscriptionService.getUserSubscription(userId);
     const maxFileSize = getFileUploadSizeLimit(subscription);
 
+    // Check file size limit
     if (req.file && req.file.size > maxFileSize) {
       const maxFileSizeMB = Math.round(maxFileSize / (1024 * 1024));
       const fileSizeMB = Math.round(req.file.size / (1024 * 1024));
@@ -55,9 +56,26 @@ export const checkFileUploadLimit = async (req, res, next) => {
       });
     }
 
+    // Check monthly file upload count limit
+    const fileUploadCheck = await SubscriptionService.canUploadFile(userId);
+    if (!fileUploadCheck.canUpload) {
+      return res.status(429).json({
+        success: false,
+        error: `Monthly file upload limit reached (${fileUploadCheck.monthlyLimit} files per month)`,
+        code: 'FILE_COUNT_LIMIT_EXCEEDED',
+        data: {
+          currentFileCount: fileUploadCheck.currentFileCount,
+          monthlyLimit: fileUploadCheck.monthlyLimit,
+          remainingFiles: 0,
+          planType: subscription.planType
+        }
+      });
+    }
+
     req.subscriptionData = {
       maxFileSize,
-      planType: subscription.planType
+      planType: subscription.planType,
+      fileUploadInfo: fileUploadCheck
     };
 
     next();

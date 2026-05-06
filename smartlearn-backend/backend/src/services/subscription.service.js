@@ -1,5 +1,5 @@
 import pool from '../config/database.js';
-import { getUserSubscriptionLimits, getHistoryRetentionDate } from '../config/subscription-limits.js';
+import { getUserSubscriptionLimits, getHistoryRetentionDate, getMonthlyFileUploadLimit } from '../config/subscription-limits.js';
 
 export class SubscriptionService {
   // Get user's current subscription with fallback to free tier
@@ -122,6 +122,46 @@ export class SubscriptionService {
       console.error('Error getting current month file usage:', error);
       return 0;
     }
+  }
+
+  // Get user's file count for current month
+  static async getCurrentMonthFileCount(userId) {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    try {
+      const result = await pool.query(
+        `SELECT COUNT(*) as file_count FROM files
+         WHERE user_id = $1 AND created_at >= $2`,
+        [userId, startOfMonth]
+      );
+
+      return parseInt(result.rows[0].file_count);
+    } catch (error) {
+      console.error('Error getting current month file count:', error);
+      return 0;
+    }
+  }
+
+  // Check if user can upload more files this month
+  static async canUploadFile(userId) {
+    const subscription = await this.getUserSubscription(userId);
+    const monthlyFileLimit = getMonthlyFileUploadLimit(subscription);
+
+    if (monthlyFileLimit === null) {
+      return { canUpload: true, remainingFiles: null, monthlyLimit: null };
+    }
+
+    const currentFileCount = await this.getCurrentMonthFileCount(userId);
+    const remainingFiles = Math.max(0, monthlyFileLimit - currentFileCount);
+
+    return {
+      canUpload: remainingFiles > 0,
+      remainingFiles,
+      monthlyLimit: monthlyFileLimit,
+      currentFileCount
+    };
   }
 
   // Get quiz attempts with history retention filter

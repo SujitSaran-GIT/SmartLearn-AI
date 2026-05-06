@@ -71,7 +71,7 @@ const HelpSupport: React.FC = () => {
           <p className="text-text-secondary">We're here to help you get the most out of SmartLearn AI</p>
         </motion.div>
 
-        {/* Support Options */}
+        {/* Support Options Cards */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
           initial={{ opacity: 0, y: 20 }}
@@ -79,9 +79,11 @@ const HelpSupport: React.FC = () => {
           transition={{ delay: 0.1 }}
         >
           {supportOptions.map((option, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-bg-secondary rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 group"
+              className="bg-bg-secondary rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 group border border-border-primary hover:border-primary-200 cursor-pointer"
+              whileHover={{ y: -2 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors">
@@ -94,77 +96,103 @@ const HelpSupport: React.FC = () => {
                   <p className="text-text-secondary text-sm mb-3">{option.description}</p>
                   <a
                     href={option.link}
-                    className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium text-sm"
+                    className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium text-sm group/link"
                   >
                     {option.action}
-                    <ExternalLink className="w-4 h-4 ml-1" />
+                    <ExternalLink className="w-4 h-4 ml-1 group-hover/link:translate-x-0.5 transition-transform" />
                   </a>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
 
-        {/* FAQ Section */}
+        {/* FAQ Section Card */}
         <motion.div
-          className="bg-bg-secondary rounded-xl shadow-lg p-8"
+          className="bg-bg-secondary rounded-xl shadow-lg p-8 border border-border-primary"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
           <div className="flex items-center mb-6">
-            <Book className="w-6 h-6 text-primary-600 mr-3" />
+            <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
+              <Book className="w-5 h-5 text-primary-600" />
+            </div>
             <h2 className="text-xl font-bold text-text-primary">Frequently Asked Questions</h2>
           </div>
 
           <div className="space-y-4">
             {faqItems.map((item, index) => (
-              <details
+              <motion.div
                 key={index}
-                className="border-b border-border-primary pb-4 group"
+                className="border border-border-primary rounded-lg p-4 hover:border-primary-200 transition-colors"
+                whileHover={{ backgroundColor: 'var(--bg-tertiary)' }}
               >
-                <summary className="flex items-center justify-between cursor-pointer py-2">
-                  <h3 className="font-semibold text-text-primary group-hover:text-primary-600 transition-colors pr-4">
-                    {item.question}
-                  </h3>
-                  <svg
-                    className="w-5 h-5 text-text-tertiary group-hover:text-primary-500 transition-transform group-open:rotate-90"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <details className="group">
+                  <summary className="flex items-center justify-between cursor-pointer py-2 list-none">
+                    <h3 className="font-semibold text-text-primary group-hover:text-primary-600 transition-colors pr-4">
+                      {item.question}
+                    </h3>
+                    <svg
+                      className="w-5 h-5 text-text-tertiary group-hover:text-primary-500 transition-transform group-open:rotate-90 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </summary>
+                  <motion.p 
+                    className="text-text-secondary mt-4 pl-4 border-l-2 border-primary-200"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </summary>
-                <p className="text-text-secondary mt-2 pl-4 border-l-2 border-primary-200">
-                  {item.answer}
-                </p>
-              </details>
+                    {item.answer}
+                  </motion.p>
+                </details>
+              </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* Contact Information */}
+        {/* Contact Information Card */}
         <motion.div
-          className="mt-8 bg-gradient-to-r from-primary-50 to-purple-50 rounded-xl p-8 text-center"
+          className="mt-8 bg-bg-secondary shadow-lg rounded-xl p-8 border border-border-primary"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <h3 className="text-xl font-bold text-text-primary mb-4">Still Need Help?</h3>
-          <p className="text-text-secondary mb-6">
-            Can't find what you're looking for? Our support team is here to help.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold">
-              Contact Support
-            </button>
-            <a
-              href="mailto:support@smartlearn.ai"
-              className="px-6 py-3 bg-bg-secondary text-text-primary rounded-lg hover:bg-bg-tertiary transition-colors font-semibold inline-block text-center"
-            >
-              Email Us
-            </a>
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageCircle className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-text-primary mb-2">Still Need Help?</h3>
+            <p className="text-text-secondary mb-6 max-w-md mx-auto">
+              Can't find what you're looking for? Our support team is here to help you with any questions or issues.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button 
+                className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold shadow-md"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Contact Support
+              </motion.button>
+              <motion.a
+                href="mailto:support@smartlearn.ai"
+                className="px-6 py-3 bg-bg-primary text-text-primary rounded-lg hover:bg-bg-tertiary transition-colors font-semibold border border-border-primary inline-block text-center"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Email Us
+              </motion.a>
+            </div>
+            <div className="mt-6 pt-6 border-t border-border-primary">
+              <p className="text-text-secondary text-sm">
+                Typically respond within <span className="font-semibold text-primary-600">2 hours</span> during business hours
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>

@@ -331,7 +331,7 @@ const Pricing: React.FC = () => {
 
         {/* Free Trial Section */}
         <div className="mt-16 text-center">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-primary)] border border-[var(--border-primary)] shadow-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] dark:from-gray-900 dark:via-slate-900 dark:to-gray-900 dark:border-gray-800">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-primary)] border border-[var(--border-primary)] shadow-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] dark:border-gray-800">
             {/* Background gradient effects */}
             {/* <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 dark:from-blue-400/10 dark:via-purple-400/10 dark:to-pink-400/10"></div>
             <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-[var(--primary-200)] to-[var(--secondary-200)] opacity-20 blur-3xl dark:from-[var(--primary-800)] dark:to-[var(--secondary-800)]"></div>
